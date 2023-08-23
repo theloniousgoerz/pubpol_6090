@@ -1,0 +1,41 @@
+---
+title: "PUBPOL 6090 Lecture 1 Notes"
+author: "Thelonious Goerz"
+date: "2023-08-23"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+## Overview
+
+-   Class emphasizes usage of the econometric toolkit used in modern reduced-form applied microeconomic research and policy evaluation.
+-   To use these tools, we need to think carefully about trade offs between assumptions, robustness, and credibility.
+
+## Classical OLS Results
+
+1.  No Correlation between $Xs$ and the error term: $E[\epsilon_i|X] = 0$
+    1.  In other words, it requires exogeneity
+2.  Homoskedastic standard errors: $var(\epsilon|X) = \sigma^2$
+3.  Error term is normally distributed $\epsilon \sim N(\mu, \sigma^2)$
+4.  No perfect colinearity between regressors, formally, the design matrix must be of full rank $(X'X)$
+5.  Linear relationship between $Y$ and $X$
+6.  $Xs$ are independent and identically distributed i.i.d.
+
+## Properties
+
+1.  $\hat{\beta}$ is consistent
+2.  PLim of $\beta$ is the true value
+3.  Variance of the estimate is asymptotically normal
+4.  Best linear unbiased estimator
+5.  Var can be computed as $(X'X)^{-1} \sigma^2$
+
+## Estimation hierarchy
+
+Identification -- Consistency -- Unbiased
+
+Correct inference (accurate SEs)
+
+Efficiency -- Precision -- Coherent research design
+
+Ease of coding and computational burden
