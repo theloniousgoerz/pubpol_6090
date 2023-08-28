@@ -42,7 +42,7 @@ If the true state of the world is that the expectation of $\alpha_i$ conditional
     1.  Using a fixed effect estimator will be consistent but not efficient
     2.  Using a random effects estimator will not be consistent
 
-### OLS (robust) versus flexible generalized least squares 
+### OLS (robust) versus flexible generalized least squares
 
 Suppose
 
@@ -62,13 +62,13 @@ If the $Var(\epsilon_i) = else$
 
 Feasible Generalized Least Squares (FGLS) is based on our ability to know and model the heteroskedasticity of the errors.
 
-### Theoretical map of econometrics 
+### Theoretical map of econometrics
 
 #### Estimation
 
 We start with a population, that is unobserved. Then, we collect a sample of data, which are the $Ys$ and $Xs$ that we will model. Further, we choose a method (for instance, regression) and we choose a method of estimation (for instance, least squares or maximum likelihood). Finally, we obtain results, such as coefficients and standard errors, and interpret the results using statistical inference and relevant, credible assumptions about the data generating process and relationship between variables.
 
-#### Results 
+#### Results
 
 Results are usually in the context of the sampling distribution (frequentist). We obtain a sample of the data out of many potential samples that we could draw. For each sample, we could have estimated our coefficients which would have yielded *different* results in each sample. So, we think about the sampling distribution of $\hat{\beta}$s that we could have obtained. Different methods of estimation will have different properties for their sampling distributions.
 
@@ -86,9 +86,9 @@ Results are usually in the context of the sampling distribution (frequentist). W
 
 ## 
 
-#### Questions 
+#### Questions
 
-Q1:  The Freedman paper is not a \"what\'s the effect of X on Y\" paper.  How do you describe its goals?  What type of paper is it?
+Q1:  The Freedman paper is not a "what's the effect of X on Y" paper.  How do you describe its goals?  What type of paper is it?
 
 Freedman critiques what he believes to be an over-reliance on regression modeling for the purpose of drawing causal inferences in social science instead of careful reasoning, domain knowledge, and shoe leather -- in reference to the work of Jon Snow, which he believes demonstrates what social science research should aspire to. Freedman takes offers a criitique of the paradigm of using model-based inference to attempt to control away and adjust specific aspects of estimation to identify a causal quantity. Rather, he advocates for researchers to pend time thinking through estimation and functional form assumptions as well as utilizing design-based inference approaches such as natural experiments to identify causal quantities. Overall, he argues that the convenience of regression as a research tool has lead researchers to begin to formulate hypotheses as whether certain coefficients are significant or not rather than doing careful investigative work like that of Snow.
 
@@ -96,6 +96,6 @@ Q2:  For getting at causal impacts, Freedman clearly dislikes using regression 
 
 Freedman highlights natural experiments and investigative work, kike that of Jon Snow, as alternatives to using regression-based methods. From the outset of the paper, he does not entirely discredit regression, explaining that he believes that in certain contexts it can be used effectively, but advocates for a more careful assessment of assumptions about specification and the data generating process.
 
-Q3:  What\'s the research question (narrowly defined) of the DiNardo and Pishkie paper?  What\'s the broader research question of the DiNardo and Pishkie paper?
+Q3:  What's the research question (narrowly defined) of the DiNardo and Pishkie paper?  What's the broader research question of the DiNardo and Pishkie paper?
 
 DiNardo and Pischke examine whether the wage differentials associated with computer use reflect productivity differences due to the introduction of computers in the workplace. More broadly, they attempt to offer an explanation about whether these returns explain large wage differentials observed in the last 15 years or whether this is the result of unobserved heterogeneity.

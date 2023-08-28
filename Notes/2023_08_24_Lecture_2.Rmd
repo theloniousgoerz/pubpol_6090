@@ -1,0 +1,42 @@
+---
+title: "PUBPOL 6090 Lecture 2 Notes"
+author: "Thelonious Goerz"
+date: "2023-08-24"
+output: pdf_document
+---
+
+## Discussion notes
+
+-   What is the ideology of data science?
+
+    -   There are many ways to estimate things and different ways of assessing the quality of different design based versus model based results.
+
+-   One strategy is to try to rule out all possible alternative explanations or results. With prior detective work, we can look for differences that we may expect
+
+    -   We could also use Directed Acyclic Graphs
+
+-   Descriptive work (graphical) is valuable or diff in means (Snow example)
+
+-   Research design \> econometric technique
+
+-   Impact of computers on wages
+
+    -   DiNardo and Pischke, does using a pencil affect productivity the same way as a computer? Is unobserved heterogeneity (jobs with computers are higher paid) responsible?
+
+    -   Takeaway: can we think of ways in which the story is wrong, can we identify empirical tests to provide evidence for assumptions?
+
+## Lecture
+
+-   The sampling distribution is a thought experiment
+
+    -   Frequentist inference makes a statement about the behavior of an estimate if we were to do a hypothetical set of $N$ random samples
+
+    -   Theorem assumption proof
+
+        -   The theorem provides information about what the behavior of the sampling distribution is
+
+-   Consistency: Is the property of the sampling distribution that states that as the sample size grows, the estimate will converge to the truth
+
+    -   Unbiasedness and variance shrinkage of an estimator proofs provide consistency assumption
+
+-   Robustness: In the presence of an assumption, how will our results vary if the assumption is violated. Can we expect the same properties?

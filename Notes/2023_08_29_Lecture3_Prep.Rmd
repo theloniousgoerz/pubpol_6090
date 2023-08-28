@@ -1,0 +1,123 @@
+---
+title: "PUBPOL 6090 Lecture 3 Prep"
+author: "Thelonious Goerz"
+date: "2023-08-28"
+output: pdf_document
+---
+
+**Monte Carlo Experiments and Econometrics**
+
+There are many ways to learn econometrics. The classical way is the assumption-theorem-proof method. You can also assess the properties of increasingly complex estimators through simulation. This is important when problems are analytically complex and there may be no closed form solution.
+
+-   Microeconometrics Using Stata (For reference).
+
+We can also assess finite sample properties. Asymptotic theory is an idea but cannot be assessed. One limitation is that the generalizibility varies -- theorems do not.
+
+**Doing Monte Carlo**
+
+How to think about running monte carlo
+
+1.  What is the data generating process
+2.  Create a sample of data
+    1.  here we can control the data generating process and add in different features or components of the data.
+3.  Estimate the model
+4.  Repeat an arbitrary amount of times
+    1.  Store the $\beta$ an SEs in a data frame
+5.  Examine the results
+    1.  We can also do hypothesis testing via creating T statistics with the betas and SEs
+    2.  We can assess the distribution of betas
+    3.  We can compare the Estimated SE to the empirical SE of the betas
+    4.  We can compare the reject rate based on our threshold to what the hypothetical reject rate should be.
+        1.  Note: it is possible to have an unbiased estimator that breaks down in regards to inference.
+
+**OLS Part II Results**
+
+OLS is a statistical model or can be thought of as an estimator
+
+$$
+\hat{\beta} = (X'X)^{-1}X'Y
+$$
+
+1.  Key assumptions and results
+2.  **Next level (when OLS breaks down)**
+3.  Interpreting what happens when we add covariate sets
+4.  Machine learning
+
+**Nice properties of OLS**
+
+-   We always get coefficients that have the interpretation "the best linear approximation of CEF"
+
+    $$
+    E[Y|X=x]
+    $$
+
+-   Even if we are not concerned with the causal effect, we have an interpret able statistical quantity.
+
+    -   If CEF is linear then the beta is the most efficient estimate
+
+        -   No matter the CEF it is the most efficient linear estimator
+
+        -   Shifts our thinking to thinking from the individual $i$ to thinking about what happens to the distribution of $Y$ and what happens to the conditional mean of r the distribution
+
+    **Steps to a causal estimate**
+
+    Labor example $Y = f(S_i)$
+
+    -   Y is earnings which are a function of some schooling, and this could take on many realized forms
+
+    -   We can set up assumptions about when the regression can be causal
+
+        -   Suppose the relationship between the outcome and Xs is linear
+
+            -   $f_i(S) = \beta_0 + p + \times S + \eta_i$
+
+                -   Where p is the causal effect and $\eta$ is the error term, which is everything except schooling that determines wages
+
+                -   This is the function of the schooling coefficient
+
+            -   This results in this regression $Y_i = \beta_0 + p + S_i + \eta_i$
+
+                -   Asymptotically, we get the plim $\hat{p} = p + \frac{cov(S_i, \eta_i)}{var(S_i)}$
+
+        -   Suppose that we can decompose "everything else" into into everything that can be projected onto observables and everything that cannot
+
+            -   $\eta_i = X_i\beta + \epsilon_i$ ; with $corr(X_i,\epsilon_i) = 0$
+
+        -   The Key identifying assumption is that $corr(S_i,\epsilon_i) = 0$ also known as selection on observables -- we assume that schooling and the error are independent (this is a strong assumption)
+
+**Problems**
+
+-   Omitted variable bias
+
+    -   in SLR the bias in the regression can be decomposed into the $\Gamma_{XS} + \beta$
+
+        -   where the $\Gamma$ is the impact of X on S and the $\beta$ is the impact of X on Y
+
+            -   We can use this to sign the bias or think through the bias of whether our $\rho$ is going to be biased up or down
+
+-   Reverse causality
+
+-   Measurement Error in RHS
+
+    -   If we have measurement error, then our conditional independence assumption will not hold
+
+    -   Classical measurement error $u_y \indep (X*Y*)$
+
+    -   We lose a bit of efficiency, but we do not necessarily lose consistency
+
+    -   For measurement error on the RHS
+
+        $$
+         \hat{\beta}= (X'X)^{-1} X'Y \\
+        = (X'X)^{-1} X' X^*\beta + (X'X)^{-1}X' \epsilon 
+        $$
+
+The above equation allows us to bracket out the measurement error observed in the RHS of the equation. Because of classical measurement error, the last term goes to 0, so we are left with the first two terms
+
+-   Which the measurement error we will get the
+
+<!-- -->
+
+-   Bad controles, endogeneous RHS, conditioning on an outcome, over controlling
+
+-   
