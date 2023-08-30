@@ -1,0 +1,143 @@
+---
+title: "PUBPOL 6090 Pre-lecture Notes 8/31"
+author: "Thelonious Goerz"
+date: "2023-08-30"
+output: pdf_document
+---
+
+**Matrix algebra representation of least squares and Flexible Generalized Least Squares (FGLS)**
+
+Matrix form of least squares can be represented by matrices
+
+-   Y is an $N \times 1$ matrix
+
+-   X is an $N \times K$ matrix
+
+-   $\beta$ is a $K \times 1$ matrix
+
+-   $\epsilon$ is an $N \times 1$ matrix
+
+$$
+Y = X\beta + \epsilon
+$$
+
+-   Strictly, X and $\beta$ must be conformable
+
+-   The goal is to isolate $\beta$ so what we do is pre-multiply by $X'$ so that it can be inverted
+
+$$
+X'Y = X'X\beta_0 + X'\epsilon
+$$
+
+The $X'X$ matrix is full rank matrix which *assuming no perfect colinearity* it is invertible. If we multiply a matrix by its inverse it cancels out
+
+**Betas in Matrix form**
+
+Then, we pre-multiply everything by $X'X^{-1}$
+
+$$
+(X'X)^{-1} X'Y = (X'X)^{-1} X''X\beta_0 + (X'X)^{-1}X'\epsilon \\
+\hat{\beta} = \beta_0 + (X'X)^{-1} + X'\epsilon
+$$
+
+Assumption of unbiasedness: $E[X'\epsilon] = 0; E[\hat{\beta}] ->0$
+
+**Variance in Matrix form**
+
+-   To get the variance we need to multiply a matrix by its transpose to square it
+
+    The quantity we want is $(\hat{\beta} - \beta_0)(\hat{\beta} - \beta_0)$ which is equal to
+
+$$
+Var(\hat{\beta}) = (X'X)^{-1} X'E[ee'] X (X'X)^{-1}
+$$
+
+We get the "sandwich" formula and where the $(X'X)^{-1}$ is the bread
+
+-   Note: In this equation the true variance is the Expectation of the $\epsilon\epsilon'$ cross multiplied by themselves we often use $\Omega$ for $E[\epsilon\epsilon']$
+
+-   Under homoskedacticity $\Omega$ is equal to $\sigma^2 \cdot I$
+
+    -   So $Var(\hat{\beta} = \sigma^2 (X'X)^{-1}$
+
+-   In the presence of heteroskedacticity, the matrix might still be diagonal but the diagonal $\sigma^2$s may be different where $i$ indexes the variances
+
+    $$
+    \Omega = \begin{bmatrix}
+    \sigma^2_1 \ 0 \ 0 \\
+    0 \ \sigma^2_2 0 \\
+    0 \ 0 \ \sigma^2_N
+    \end{bmatrix}
+    $$
+
+If the errors are first order autocorrelated (FGLS) slides
+
+-   There is a row correlation from the off diagonal
+
+-   If we know the variance structure of omega, that is to say that it is not the identity matrix
+
+    -   If we know the structure, the minimum variance estimator is
+
+    -   $\hat{\beta}_{FGLS} = (X'\Omega X)^{-1}X'\Omega^{-1}Y$
+
+    -   The variance is $V[\hat{\beta}_{GLS}] = (X'\Omega X)^{-1}$
+
+Problem: We cannot know $\Omega$ so we cannot implement the error structure
+
+\*If we know or can guess the functional form we can implement the feasible generalized least squares
+
+$$
+\hat{\beta}_{FGLS} = (X'\hat{\Omega} X)^{-1}X'\hat{\Omega}^{-1}Y
+$$
+
+This requires a model for Omega and estimates from that model
+
+-   Often, Omega inverse can be factored into the square root (this is true if the error structure is based on first order autocorrelation or heteroskedacticity
+
+    -   We can pre-multiply X and Y and run least squares on the estimates
+
+        -   We multiply the data by lambda
+
+    -   $\hat{\beta}_{FGLS} = (X*X*')^{-1}X*Y*$
+
+-   For example, for heteroskedasticity, the diagonal $\sigma^2$ of $\Omega^{-1}$ may be $1/\sigma^2$ So then the $\lambda$ matrix would have diagonals $1/\sqrt{\sigma^2}$ Multiplying these together gives us the identity matrix, which allows us to implement feasible generalized least squares. We take the data and multiply it by 1 over the square root of its estimated variance
+
+-   We can also use weights in Stata or R -- e.g., we can run WLS and specify the weight formula
+
+**OLS Part II**
+
+**Bad controls**
+
+-   Many different names
+
+    -   Bad controls, over controlling, conditioning on an outcome, engogenous RHS
+
+-   Imagine that we have
+
+$$
+Y = T \\
+W ->Y \\
+T ->W 
+$$
+
+If we run $Y = T + W$ then we bias the estimate because T effects W which effects Y
+
+-   Simplify variables to 0 or 1 and add and subtrack trick
+
+-   C is the treatment variable and W is a binary bad control for blue collar job
+
+-   Y is the outcome for earnings
+
+-   Causal effect of college $E[Y|C=1] - E[Y|C=0]$
+
+-   Suppose $E[W|C=1]> E[W|C=0]$
+
+    -   This means that college induces white collar jobs more than blue collar jobs
+
+    -   If we condition on W , we add and subtract the group of people who do not go to college and are white collar of college is true
+
+    -   This reflects the selection effect of people who are white collar if college might have different potential earnings than those who would have white collar if high school
+
+-   Suppose that S is years of schooling and we want to predict earnings, we would like to control for innate ability and we have a control for test svore which is late ability
+
+-   

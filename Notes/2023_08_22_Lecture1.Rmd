@@ -24,7 +24,7 @@ output:
 
 ## Properties
 
-1.  $\hat{\beta}$ is consistent
+1.  $\hat{\beta}$ is consistent (e.g., as sample size increases the estimate converges to the true $\beta$)
 2.  PLim of $\beta$ is the true value
 3.  Variance of the estimate is asymptotically normal
 4.  Best linear unbiased estimator

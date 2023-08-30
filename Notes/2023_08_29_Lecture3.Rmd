@@ -1,0 +1,68 @@
+---
+title: "PUBPOL 6090 Lecture 3 Notes"
+author: "Thelonious Goerz"
+date: "2023-08-29"
+output: pdf_document
+---
+
+**Agenda**
+
+-   Monte carlo
+
+-   measurement error
+
+-   CEF
+
+**Reading**
+
+-   Two star readings coming up for next Tuesday/Thursday
+
+    **Notes**
+
+    **Monte carlo is an alternative method of learning new econometric methods**
+
+    -   It is also used in bootsrapping to achieve a standard error and in circumstances where we need to create a standard error (e.g., null distribution with Synthetic control)
+
+        -   Monte carlo can be used to answer questions about a method in non-standard cases (e.g., RD with binned age rather than continuous age)
+
+        **Generating data**
+
+        -   We know the true $\beta$ and we can compare the means of the estimated $\hat{\beta}$ and we would hope that it is close to the true mean
+
+            -   The $SE$ of the $N$ simulated $\beta$s is the quantity that we want to estimate with the $\hat{SE}$. The goal of estimation is to approximate the standard deviation of the distribution of beta hat.
+
+        -   We compare the test statistic with an estimate $\hat{SE}$ we are estimating the statistic with noise because we do not have the *true* standard deviation. If we had the true standard error, we could compare the test statistic to the standard normal distribution
+
+    -   When we switch from $SE$ to $SE_r$ we get a standard error which is unbiased but we get more variability. We get a smaller reject rate as well.
+
+-   Can we know the form of heteroskedacticity?
+
+    -   Sometimes
+
+    **Conditional expectation function**
+
+    $$
+    E[Y|X]
+    $$
+
+    -   Useful quantity of interest for both descriptive and causal work
+
+        -   This tells us about the average Y value when X takes on a particular value
+
+    -   Regression can be useful for estimating it
+
+    -   Properties
+
+        -   If this function, no matter how complicated, is linear OLS is the best linear estimator
+
+            -   In the case where the $X$s are dummy variables, that makes the equation a linear function --- OLS is the best we can do. (Think LPM)
+
+**Measurement error**
+
+-   Attenuation result
+
+    -   Measurement error on the RHS, $u_x$ is the measurement error which is uncorrelated with everything
+
+        -   We want to observe $X^*$ but we can only observe $X$ ests up attenuation result (page 12 of the slides) for 8/29
+
+-   
