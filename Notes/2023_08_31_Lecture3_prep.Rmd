@@ -122,7 +122,7 @@ $$
 
 If we run $Y = T + W$ then we bias the estimate because T effects W which effects Y
 
--   Simplify variables to 0 or 1 and add and subtrack trick
+-   Simplify variables to 0 or 1 and add and subtract trick
 
 -   C is the treatment variable and W is a binary bad control for blue collar job
 

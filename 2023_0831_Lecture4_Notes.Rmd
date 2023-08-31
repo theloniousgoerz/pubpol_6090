@@ -1,0 +1,110 @@
+---
+title: "PUBPOL Lecture 4 Notes"
+author: "Thelonious Goerz"
+date: "2023-08-31"
+output: pdf_document
+---
+
+**Looking ahead**
+
+-   Problem set coming up this weekend
+
+-   Two star reading next thursday (9/7)
+
+**Agenda**
+
+-   FGLS
+
+-   Monte Carlo
+
+-   Bad Controls
+
+**Notes**
+
+Matrix algebra of least squares and linear models
+
+-   Two ideas about modeling violations
+
+    -   FGLS - identify the violation and model it explicitly
+
+        -   Think efficiency (smallest possible variance)
+
+    -   Robust - can we do our best to correct even when we don't the form of the violation and be robust to it
+
+        -   Think robustness
+
+-   How can we make a choice about how to model the variance if heteroskedasticity?
+
+    -   We can test different models between each other (compare residuals)
+
+    -   Could use machine learning to identify the variance structure
+
+-   Generalized least squares (F) is a large family of models
+
+    -   Using weighted least squares for heteroskedasticity
+
+    -   $\epsilon \sim ar(1)$ autocorrelation
+
+    -   Random effects for panel data
+
+        -   If something is in GLS it is generally that we are thinking about the model errors, which will have a variance covariance matrix that is not $I \times c$
+
+            -   I and j in a normal model will have the corr of 0
+
+            -   in a panel data context the cross product of i and j for the same unit will be correlated which will not be the identity matrix cov structure.
+
+                -   This is predicated on a random shock at the group level and the individual level
+
+            -   Because random effects requires stronger assumptions, fixed effects are more commonly used for robustness
+
+-   The unifying theme is the cross product of the errors $E[ \epsilon \epsilon'] = \Omega$ in this case, the cross product of the errors will be something else other than the identity matrix
+
+**Weighting**
+
+-   Example, weighted elast squares with heteroskedasticity motivated by wanting more efficiency
+
+*why*
+
+-   Improved efficiency for heteroskedasticity
+
+    -   give low var points high weights and high var points low weights
+
+-   Representativeness of the population (survey methods)
+
+    -   When modeling county aggregate data to get person-level effects, weight county by population
+
+-   Nonparametric kernel weights
+
+    -   Weighting to get values of a function at each point
+
+-   LATE reweight
+
+    -   IV implicitly reweights through $Z->T$
+
+-   Propensity score reweighting
+
+-   TWFE Negative weighting problem implicit in the estimator
+
+*mechanics*
+
+Define the weights as the W going down the diagonal of the matrix $\beta_{wls} = (X' WX)^{-1} (X'W Y)$
+
+Or we can define our estimator that minimizes the weight of square errors
+
+$\beta = argmin \sum \hat{\epsilon_i} \omega_i$
+
+In stata reg y x [w = myweight]
+
+Pre-multily $y_i = \sqrt{\omega_i}y_i$
+
+*Stata*
+
+-   PW - probability weights
+
+    -   based on the sampling probability, motivated by representativeness
+
+-   A weights, analytic weights -- measurement with noise
+
+-   Fw - frequency weights -- saving data
+
+-   Iw - importance weights
