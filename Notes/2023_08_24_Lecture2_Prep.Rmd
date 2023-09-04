@@ -40,7 +40,10 @@ If the true state of the world is that the expectation of $\alpha_i$ conditional
     If the true state of the world is that the expectation of $\alpha_i$ and $X_i$ are not equal then:
 
     1.  Using a fixed effect estimator will be consistent but not efficient
+        1.  The fixed effects estimator takes the average of $\beta$ and subtracts it from the *within group coefficient* which results in only "within variation"
     2.  Using a random effects estimator will not be consistent
+        1.  Random effects are a weighted average of within and between estimates (FE plus $\bar{X}$ )
+            1.  Between estimates average the $t$s for individual $i$
 
 ### OLS (robust) versus flexible generalized least squares
 
