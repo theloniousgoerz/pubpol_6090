@@ -1,0 +1,128 @@
+---
+title: "PUBPOL 6090 Lecture 6 Notes"
+author: "Thelonious Goerz"
+date: "2023-09-07"
+output: pdf_document
+---
+
+**Agenda**
+
+-   Potential outcomes framework
+
+```{=html}
+<!-- -->
+```
+-   Econometric equations
+
+```{=html}
+<!-- -->
+```
+-   Box and rows + dags
+
+```{=html}
+<!-- -->
+```
+-   Words
+
+**Potential outcomes and econometric equations**
+
+-   We can think of spillovers in many ways
+
+    -   We can think of an individual i's $Y$ outcome being a function of $N$ possible treatment assignments of all individuals in the sample
+
+-   SUTVA - often used to simplify assumptions
+
+    $$
+    Y_i \indep Y_{i+1-N} \\ Y_i (T_i) \\
+    Y_i = \beta T_i + \beta_{2 \dots N} + \epsilon_i
+    $$
+
+    -   We can think of the $Y_i$ outcome being determined by the treatment $T_i$
+
+    -   We can test this by running a regression of $Y_i = \beta_i T + \bar{\gamma}_g + \epsilon_i$
+
+        -   Where the gamma bar term is the average treatment status for all other in the group
+
+*Directed acyclic graphs*
+
+-   Can represent assumptions and confounding/selection bias
+
+    -   Mostly created by Judea Pearl
+
+        -   Created do calculus which is a formal mathematical structure on top of the DAG
+
+*Randomization with partial compliance and experiments*
+
+$$
+R -> T -> Y \\
+where \ Cor(R,T) \neq 1
+$$
+
+In the above equation, T represents the compliance with the randomization process R
+
+$$
+ITT = E(Y_i | R = 1) - E(Y_i|R=0) 
+$$
+
+-   Itt is the causal effect of encouragement
+
+    $$
+    1st \ stage =  \frac{E(Y_i | R = 1) - E(Y_i|R=0) }{E(T_i | R = 1) - E(T_i|R=0) }
+    $$
+
+-   Often referred to LATE or the ATE for those whose treatment changed in response to the randomization (marginal compilers). Compliers comply if and only if they are encouraged through randomization.
+
+    -   **The denominator of the first stage is also the strength of the instrument being used.**
+
+    -   Denominator: is the weighted average of the fraction of the population that are compliers
+
+    -   Numerator: is the weighted average of Y outcomes for the compliers
+
+-   We can also have always takers
+
+$$
+E(T|R= 0) = 1 \\
+E(T|R = 1) = 1
+$$
+
+-   The values for always and never takers will be 0 because regardless their treatment status never changes
+
+    -   So the LATE is a weighted average of the compliers
+
+-   We can also look at the average outcomes for compliers to see who the compliers are in terms of descriptive characteristics
+
+    -   We may not actually know why people are complying
+
+*Attrition in randomized experiments*
+
+-   How do we assess if this is a problem?
+
+    -   We need to measure attrition
+
+        -   Differential attrition across $X$s , differential attrition at the $\alpha$ level, where $\alpha$ is a group fixed effect or strata
+
+            -   We may want to be worried about whether $cor(\beta,A) \neq 0$ where an individuals treatment effect influences whether they attrit or not
+
+    -   Stat approach: Missing at random conditional on X or missing completely at random unconditional.
+
+        -   We can impute with minimum and maximum change in $\beta$ using Lee Bounds (2002)
+
+            -   Related to Partial identification problems
+
+*Other issues with randomization*
+
+Randomization bias: The fact of running the experiment changes the participants potential outcomes or at least the population we are studying. Lottery winners may Ex-post work harder in the labor market to justify the treatment effect (this is not a bias per se but a different estimand).
+
+Close substitute bias: Taking a class and paying \$200 and taking a class for free (the treatment is very close between these two options. Heckman, what is the average benefit for the people? In this case, the treatment and control have different payoffs but the payoff may be very close.
+
+-   Reduced form itt of offering the subsidy for head start
+
+Queuing bias: Queuing bias is related to spillovers, but if we think about the idea of getting in a queue it necessarily means that the process is disadvantaging the possibility to for another individual being treated.
+
+*Incentives to learn*
+
+Maybe we can control for pre-treatment test score as a lagged variable in the RCT
+
+-   While there may be an endogeneity in one regressor, the randomization taking place in the treatment variable is untainted.
+
+-   

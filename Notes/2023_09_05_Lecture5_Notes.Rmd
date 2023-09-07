@@ -1,0 +1,118 @@
+---
+title: "PUUBPOL 6090 Lecture 5 Notes"
+author: "Thelonious Goerz"
+date: "2023-09-05"
+output: pdf_document
+---
+
+**Agenda**
+
+-   Review recent topics
+
+    -   Overcontrolling, bad controls, endogenous right hand variables
+
+    -   Linear probability model
+
+-   Discuss material
+
+**Review**
+
+-   How is overcontrolling distinct from colinearity?
+
+    $$
+    X -> W \\
+    X -> Y \\
+    W -> Y 
+    $$
+
+    -   We do not want to condition on W because it also effects the outcome Y
+
+    -   X and W could be correlated through a fourth variable $Z$
+
+        -   We will capture the total cumulative effect of X and W on Y, because W co-determines Y but we do not control it.
+
+        -   **Controlling for W is overcontrolling *when the target is the direct effect***
+
+            -   Mediation analysis,
+
+                -   We can decompose into the direct effect of X and the mediator W
+
+                    -   If X and W are related through Z, controlling is fine, but we might lose precision
+
+                -   We can target the indirect effect by $X \times W$
+
+    -   Angrist and Pischke example:
+
+        -   Education = schooling + latent ability
+
+        -   Test scores = latent ability + schooling
+
+        -   Earnings = Education + Test scores + error
+
+        -   $\hat{p} = p - \gamma \frac{\pi_1}{\pi_2}$
+
+**Linear probability models**
+
+-   Binary LHS and RHS -\> LPM
+
+-   Rare events -\> Logit or probit
+
+-   Use LPM and use logit or probit for robustness
+
+-   Predictive exercise -\> LPM
+
+-   Disciplinary practice (Interpretability)
+
+*Leading motivations for LPM*
+
+-   Easy
+
+-   Gives direct marginal effects
+
+-   Fits with other complicated models
+
+-   More conservative (maybe feels that way)
+
+-   Usually, it doesn't matter what you use (results are similar) so use the simpler case.
+
+*leading motivations for ligut and probit*
+
+-   Rare event LHS variables
+
+-   High variability in $P(Y=1)$
+
+-   Audience expectations
+
+*Notes*
+
+-   LPM works a bit better with fixed effects in general
+
+    -   For logit and probit -- there can be problems with logit and probit
+
+-   Usually our motivation is what is the marginal effects?
+
+    -   What is the change in y as change in X
+
+        -   Logit and probit are a bit less interpretable
+
+*A note on marginal effects*
+
+-   In linear models, the marginal effect is often straightforward. In a nonlinear model like logit, the marginal effect depends on the value, so the coefficient is not as easily interpreted.
+
+*Frisch Waugh Lovell*
+
+FWL is a way to represent a coefficient $\beta$ net of other covariates which we partial out.
+
+-   What to do when we have an interaction term?
+
+-   Partial out $X* D$
+
+How to implement
+
+$Y_{ct} = \beta_1 X_{ct} + \beta_2X_{ct} + \beta_k X_{ct} + \alpha_c + \gamma_c * time_t + \epsilon_{ct}$
+
+-   We have three betas indexed at time and county, then we have the alpha fe for county and the gamma county trend multiplied by time
+
+**To do**
+
+-   Can we think of an over controlling example which would increase the magnitude?

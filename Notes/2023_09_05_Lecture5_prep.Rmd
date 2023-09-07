@@ -132,7 +132,7 @@ Maybe we can estimate the ATE by estimating$\bar{Y_{i=1}} - \bar{Y_{i=0}}$ , pli
 By the add and subtract trick
 
 $$
-= E(Y_{1i} |T_i =1) - {E(Y_i |T_i =1)} \ + \bf{E(Y_{0i}|T_i = 1) - E(Y_{0i} | T_i =0)}
+= E(Y_{1i} |T_i =1) - {E(Y_{i0} |T_i =1)} \ + \bf{E(Y_{0i}|T_i = 1) - E(Y_{0i} | T_i =0)}
 $$
 
 The first, non bold, term the ATT
@@ -152,7 +152,7 @@ $$
 2 :\ Y_{0i} = \beta_0 + \epsilon \\
 3 :\ Y_{1i} = \beta_0 + \beta_1 + \epsilon \\
 4: \ E(Y_{0i}|T=1) - E(Y_{0i} |T=0) = E(\epsilon|T=1) - E(\epsilon|T=0) \\
-or Cor(\epsilon,T) \ineq 0
+or \ Cor(\epsilon_i,T_i) \neq 0
 $$
 
 Term four will be present if the errors between the treatment and control groups are different, if they are the same then they equal 0 and cancel out like $\beta_0$
