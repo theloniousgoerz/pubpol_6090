@@ -1,0 +1,36 @@
+---
+title: "PUBPOL 6090 Lecture 6 Prep"
+author: "Thelonious Goerz"
+date: "2023-09-09"
+output: pdf_document
+---
+
+**Experiments**
+
+Some limitations and problems with experiments
+
+1.  When you randomize, you get the average effect of X on Y, but this does not allow us to get at deep parameters. You can only estimate a little
+2.  There is also a limitations with how mechanisms work and they are often a black box
+3.  We don't know the external validity, because the experiment cannot tell us about extrapolation
+    1.  Once we have the ability to repeat the experiment and or get multi-site information, we can learn about external validity
+4.  Randomization bias, Heckman, which means that because of the randomization we are getting a *different* treatment than we would elsewise
+    1.  substitution bias
+5.  Experiments are costly and may be ethically wrong depending on the treatment or denial of the treatment
+6.  ex. ante v ex.post compensation
+7.  Limited or partial equilibrium effects
+    1.  The treatment effect is taking as given, the macro-environment
+        1.  We cannot get at general equilibrium even though we want to learn that
+8.  limited duration bias
+    1.  We may only be able to learn the experimental effects over a short time period (e.g., running a UBI experiment for a few years)
+9.  Hawthorne effect
+    1.  people know they are being observed and may change their behavior
+
+**Things to note**
+
+1.  We should check for covariate balance
+    1.  This is a good test to implement
+    2.  If there are major differences in covariates it may make sense to control fo them to "soak up residual variation." In general, they should not affect the outcome
+2.  Multiple outcomes and hypothesis testing
+    1.  will lead to incorrect p-values, there will be something significant but data mining and fishing are bad practice
+3.  Create a pre-analysis plan and register it
+4.  

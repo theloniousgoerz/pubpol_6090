@@ -9,19 +9,16 @@ output: pdf_document
 
 -   Potential outcomes framework
 
-```{=html}
 <!-- -->
-```
+
 -   Econometric equations
 
-```{=html}
 <!-- -->
-```
+
 -   Box and rows + dags
 
-```{=html}
 <!-- -->
-```
+
 -   Words
 
 **Potential outcomes and econometric equations**
