@@ -1,0 +1,58 @@
+---
+title: "PUBPOL 6090 Lecture 8 Notes"
+author: "Thelonious Goerz"
+date: "2023-09-12"
+output: pdf_document
+---
+
+**Agenda**
+
+Discuss Kremer
+
+Nonparametric review
+
+**Kremer et al. discussion**
+
+-   Kremer et al. 2009 bridges nonparametric estimation and experiments
+
+-   What is the unit of analysis
+
+    -   Robust standard errors clustered at at he level of the school
+
+-   Mechanisms
+
+    -   Spillovers are one possibility
+
+        -   Talking to teachers
+
+        -   Girls who have a low probability of getting a scholarship
+
+        -   boys who cannot get scholarships
+
+**Nonparametric review**
+
+-   More flexibility as N goes up, increases noise but reduces bias
+
+    -   As we obtain more data and reduce the number of $h$ that we have, shrinks the bias and the variance
+
+-   In contrast to classical econometrics, we can choose the flexibility of our model
+
+-   We can also create kernel weights looking locally at a point and then use the weights in a weighted least squares format
+
+-   Semi-parametric
+
+    -   $y = X_i\beta + f(z) + \epsilon$
+
+        -   We might control for Zby a higher order polynomial
+
+    -   In the context of Kremer, we want to look at the distribution (nonparametrically) to see how the distribution changes (if we expect a discouragement effect, we would expect that we might have a different mass as part of th function
+
+-   Kremer et al also implement fan regression In figure 3
+
+    -   We mostly use it descriptively
+
+        -   However, RD which is causal, is usually combined with nonparametric
+
+            -   We do this when we are trying to get an answer that is local to a specific point $X^*$
+
+        -   
