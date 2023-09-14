@@ -30,6 +30,8 @@ onesample <- function(n){
   return(data.frame(beta, stderr, beta_r, stderr_r))
 }
 
+
+
 # Run onesample once as a check
 result_check <- onesample(n = 200)
 print(result_check)

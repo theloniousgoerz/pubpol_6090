@@ -1,0 +1,217 @@
+---
+title: "PUBPOl 6090 Lecture 8 Prep"
+author: "Thelonious Goerz"
+date: "2023-09-12"
+output: pdf_document
+---
+
+**Introduction to nonparametric estimation**
+
+$$
+Y_i = X_i\beta + \epsilon_i
+$$
+
+Our quantity of interest is estimating
+
+$$
+E[Y|X] = X_i\beta
+$$
+
+And $\beta$ is the *parameter* that we are estimating. As our sample size $N -> \infty$ our $var(\hat{\beta}) -> 0$ and our expected values of $\beta$ will go to the true beta and we will be exactly right.
+
+Suppose, that the state of the world is non-linear, then the beta hat will get increasingly precise, but may be limit of the prediction of the CEF that is systematically biased.
+
+-   The goal with non-parametic estimation is that we let our model change as we get *more data* and adapt to *multiple truths in the world*
+
+    -   But with increasing precision. It is not dependent on a single ***Parametric model*** like a linear model with parameters $\beta$.
+
+**Kernel density estimation Itheory)**
+
+*Motivation*
+
+Suppose the pdf of a variable x is $f(x)$ , parametrically, we could assume that $X \sim N(,\mu, \sigma^2)$ so all we have to estimate mu and sigma.
+
+-   The non-parametric approach says it *doesn't have to be normal* it could be all of these other possible distributions
+
+So, we estimate the density. We could plot the data as a histogram, which is a crude, b*ut potentially reasonable estimation of the density of x.*
+
+-   Properties of $\hat{f_{hist}}$
+
+    -   What can we say about the bias and variance of the histogram estimator at a particular bin $x^*$ ?
+
+    -   Recall, law of large numbers, $\bar{x} -. \mu = E[X]$
+
+        -   The central limit theorem says $\frac{\bar{x} - \mu}{\sigma/\sqrt{\mu}} \sim^d N(0,1)$
+
+        -   In a histogram, suppose we have an interval for the bins of our histogram $z_0,z_1$ that is targeting the quantity $z^*$
+
+            -   The histogram estimator is $x_i =1$ if $X_1 \in (z_0,z_1)$, the resultant $\bar{x}$ is the fraction of observations that are in this histogram bin ( the number in the bin/all observations).
+
+$$
+\mu = E[X] = E[z_i \in z_0,z_1)] = \\
+\int_{-\infty}^{\infty}1[z \in bin] \cdot f(x) dz, \\ = 0 \forall \notin (z_0,z_1)
+$$
+
+-   The integral is the expectation function or the mass of $f(x)$ in the bin
+
+    -   $\bar{x} -> \bar{f}(z_i-z_0)$
+
+        -   Depending on where $z_i$ is within the interval, may be more or less biased depending on its location. This depends on where we are looking in the bins? We can center the $z^*$ , depending on how far the $z_i$ is from the center of the bin, will determine its bias.
+
+            -   What to do? What if we make the bins smaller, then we reduce the bias? And the average gap between the estimate and the density will go down (therefore the bias of the histogram density estimator will go down)
+
+        -   The variance, in general of a binomial variable, whether the observation $z_i$ is within the bin is $(1-p)$
+
+            -   In general the variance of $var(x) = \mu(1-\mu) /N$
+
+                -   So $\hat{x}_{hist} = \bar{x} / (z_1-Z_0)^2$
+
+    -   Putting it all together, the estimator $\hat{f}_{hist} \sim N(\bar{f}, \frac{\mu(1-\mu)}{N(z_1-z_0)^2}$
+
+        -   How does $\bar{f}$ compare to $z^*$, in general making the binwidth smaller will lower the bias, but even if we make the bias lower because of the bins, then the histogram estimator *may still be biased* because of a non-linear density function. **If we have a linear density function and our z is in the direct center it will be unbiased.**
+
+            -   But making the bin smaller **will increase the variance**
+
+        -   Bias: and variance
+
+            -   Robustness - smaller bias
+
+            -   Efficiency - smaller variance (in this context)
+
+    **The fundamental idea of non-parametric estimation**
+
+Imagine as N goes to infinity, and we make $z_1-z_0$ smaller, we don't have a fixed binwidth, but we shrink the binwidth as we get more data, and as it shrinks the bias gets smaller. ***As the bin shrinks, it happens slowly, so that as the bias gets smaller (more and more observations are filling that bin also) resulting in a lower variance.***
+
+-   B is the bandwidth ( how close or far are we looking)
+
+    -   H -\> 0 as n -\> infinity, less bins and bigger
+
+**Kernel density estimation**
+
+Goal: We want to estimate the density of a variable $X$ at some point $Z^*$ . We started with a Naive estimator, which is the histogram, 1) it performs the best when we center it around $z^*$ 2) we have to choose our bandwidth $H$ which is the number of bins (also can be thought of as a tuning parameter).
+
+As we shrink $h$ our variance or noisiness of the estimates will increase.
+
+$$
+\bar{f}_h = 1 \ (z_1-z_0 \cdot 1/N \sum_i I(z_i \in (z_1-z_0) = \\
+conventionally\\
+1/h \cdot 1/N \sum_i I(z_i \in (z^*+/- h/2)
+$$
+
+The second estimator is a more general density estimator where the bandwidth is centered on $z^*$
+
+With the properties (generally)
+
+-   bias - $f' h$ what is the shape of the true density
+
+-   Variance $1/nh$ shrinks if h gets bigger
+
+The histogram estimator is written as
+
+$$
+\hat{f}_{z^*} = 1/Nh \sum_i^n I[|\frac{z_i-z^*}{h}| < 1/2]
+$$
+
+Which basically means that the indicator function of whether $z_1$ is within the bin summed and multiplied by 1 over the sample size times the number of bins.
+
+Kernel density estimations generally have this form:
+
+$$
+1/Nh \sum_i^N K(\frac{z_i-z*}{n})
+$$
+
+Which is the fraction of one over nh times the sum of some kernel function of the normalized distance between $z_i$ and the target $z^*$
+
+-   These kernels are centered at 0 and measure how close one observation is to this 0 center. How close they are can be a linear kernel, which weights observations farther from 0 (Triangle Kernel)
+
+    -   We can also use a gaussian kernel
+
+-   Kernels have to have a mean of 0 and an integral of 1
+
+    -   Typically they are symmetric
+
+        -   For most kernels they are basically pdfs
+
+    -   There are quadratic and 4th order quartic kernerls (epinechnakov kernel)
+
+-   Main idea: For all of these kernels, where we are normalizing our observation distance how far are the kernels from the point of interest? And these observations are weighted according to the kernel.
+
+***Steps to nonparametric density estimation***
+
+1.  Firstly we choose the point we want to look at (variable range of z\*
+2.  Next we choose the kernel function
+3.  Then we choose the bandwidth h
+
+Once these are chosen, we can calculate our kernel density estimate of the bandwidth
+
+*How do we choose our z, h, and kernel*
+
+1.  Usually, we do the $z^*$ over the whole range of data, we repeat this a lot of times and do the same procedure for each time
+2.  Choice of kernel and h are more substantive choices
+    1.  Kernels have some differences but generally aren't that sensitive
+    2.  What is sensitive is the choice of *bandwidth*
+
+*Choice of bandwidth*
+
+Asymptotic econometric results of bandwidth estimates.
+
+-   What is the bias of the kernel density estimate?
+
+    -   it depends on $1/2 h^2$ , it depends on the second derivative of the point estimate $f''(x^*)$ , and a constant, that depends on the kernel $C_k = \int t^2k(t) dt$
+
+        -   The constant is fixed and unknown
+
+-   The variance of the function depends on
+
+    -   $1/Nh$ and the constant $C_k = \int k^2(t) dt$
+
+-   How do we choose the bandwidth as a function of our sample size $h(N)$
+
+    -   What if we chose an h based on minimizing mean squared error ($bias^2 + var$)
+
+        -   **We want the** $h^4$ **to be proportional to** $1/nh$
+
+            -   $\bf{h \ propN^{1/5}}$
+
+-   The approach
+
+    -   Draw the graphs, and judge them by eye. Be true to the data.
+
+-   Optimal bandwidth (we do not know the density)
+
+    -   if we assume that it is normal and that the integrated MSE is minimized, then we can get the second derivative and we can verify what the optimal bandwidth would be *exactly*
+
+**Kernel density and nonparametric regression**
+
+If we are calculating the density in multiple dimensions (we are taking a local average) it can become complicated if we do not have common support.
+
+*Kernel regression*
+
+In some sense, the kernel density is taking an average of whether the observation is in the bin for different kernel weights
+
+$$
+1/nh \sum_i^N k(\frac{x_i - x^*}{h}) \cdot 1 = \\
+ey|x=x^*) = \mu(x^*) \\
+\mu(x) = X_i\beta
+$$
+
+We calculate the average $\bar{y}$ in each bin, the histogram version is :
+
+$$
+\hat{\mu}(x^*) = \frac{\sum(y_i - 1(x \in x^* +/- h/2)}{\sum_i^N 1 (x \in x^* +/- h/2)}
+$$
+
+The general kernel regression estimator is:
+
+$$
+\hat{\mu}(x^*) = \frac{\sum_i y_i k(\frac{x_i-x^*}{h})}{\sum_i k(\frac{x_i-x^*}{h})} = \\
+\sum y_i \cdot\omega_i
+$$
+
+Issues with nonparametric regression
+
+-   if we have asummetric data (e.g., to the left of the $x^*$ then we will have systematic bias,
+
+-   also because the first derivative is positive
+
+-   
