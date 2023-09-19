@@ -1,0 +1,90 @@
+---
+title: "PUBPOL 6090 Lecture 9 Notes"
+author: "Thelonious Goerz"
+date: "2023-09-14"
+output: pdf_document
+---
+
+**Overview**
+
+-   Machine learning in economics
+
+    -   Look at ML Notes, short courses and videos in the reading list (Athey and Imbens)
+
+        -   Causal inference and machine learning (Econ 6XXX)
+
+-   Topics to reemphasize for lecture
+
+**Notes**
+
+*Machine learning*
+
+1.  Is your model overfitting (key question in machine learning)
+    1.  In a regression sense: (N-K) if this is small, then we may have overfitting
+        1.  In a problem when we have three observations, we may get very noisy estimates
+            1.  Our residuals $\hat{\epsilon}_i$ which are our estimates of $\epsilon_i$.
+            2.  Overfitting results in fitting too close to the $\beta$s that we observe, which results in a magnitue od the residuals that is systematically "too small" or large depending on the observations.
+                1.  We also have 3 parameters and two observations, which exacerbates this.
+        2.  We are trying to estimate $1/n \sum \sigma^2_{e}$ , but using $\hat{\epsilon}_i$ is not going to work if the errors are systematically biased due to overfitting
+            1.  The regression line is going to be influenced by the points which will results in the noise in the betas. **The issue with overfitting, is that the epsilons are biased in a systematic way.**
+                1.  If we had $\hat{e}$ that are equal to 0 if we have 0 degrees of freedom. We would think that there is "no error" in all contexts, which is not true.
+2.  In Machine learning, we are interested in *prediction* and if we have overfit data, ML ays attention to overfitting more explicitly.
+    1.  When using local linear regression with infinitely many bins (to model a non-linear relationship between y and x), with infinite bins (We get OLS line).
+        1.  with shrinking bandwidth, then we get more and more *local* to the individual points. **If we were to shrink the bandwidth, then we would just end up with an overfit model where each data point is connected with a line.** *It is the bias in the amount of measured mistakes.*
+            1.  All of the errors would be 0, and the estimate would be systematically biased and we would think that the prediction is perfect, when in reality it is not. If we had used OLS, then our estimates would be noisy.
+    2.  The idea is that *we want out model to be flexible to different contexts rather than dependent on the specific sample*
+        1.  N/N-K is the fix for overfitting in OLS, which characterizes the amount of bias that is in the estimate.
+    3.  In OLS, we could use Jacknife and we could also use Cross validation.
+3.  In machine learning, almost all models have some sort of tuning parameter that characterize the degree to which the model is flexible
+    1.  We want to characterize the out of sample goodness of fit
+        1.  The OSGF will get better with model flexible
+        2.  The noise will get worse with more flexibility
+        3.  There is somewhere in the middle where there is a bias and flexibility tradeoff for the **optimal flexibility**
+            1.  When optimizing the OSGF, our in-sample measure of fit may be worse. As we get more flexible our OSGF will increase and our in-sample GF will decrease
+    2.  Where ML is useful for this, we usually have a tuning parameter that we can use to assess the flexibility (this is a single number which is conceptually useful).
+        1.  Bandwidth in local linear regression
+        2.  Lambda in Lasso
+            1.  *When lambda equals 0, lasso is equal to OLS (less flex)*
+                1.  While lambda is the most flexible at 0, which is counter intuitive, we usually start with K regressors that is large so this flexibility is better given the dimensional issue.
+    3.  **To choose a tuning parameter (we can use cross-validation) to evaluate the Goodness of fit, and then we can optimize the tuning parameter using the OOS GOF.**
+        1.  We repeat the process and take the average of the *OOS GOF* and we compare that to a different lambda parameter.
+        2.  We can take this a step further, and partition the full data into a train and test, and then use the CV on the training, then estimate a final OOS GOF on data that the model has not seen
+        3.  But, we need a Large N for this, so we have enough data to use the method
+        4.  In general, we want to randomize the train and test, but, if the data have an underlying structure (e.g., clustered in counties) we want to randomize at the county level to include that tructure.
+    4.  Note: The jacknife estimator is an N-k fold cross validation, where we estimate the regression over and over dropping a different $i$ each time.
+
+*What about p-hacking*
+
+When we use the train and test data, this allows us to guard against p-hacking. For instance, we can use the model training process with CV and then we can check and test the model at a later stage. These should be distinct processes.
+
+We can also partition, train, test, and hold out: hold out is saved til peer review, and then is re-tested with the model based on the train and test.
+
+*Should we estimate the model on the full data after training and testing?*
+
+If we want to get final predictions for a whole population, we then may re-estimate on the full data to obtain those predictions.
+
+*To model check*
+
+We could estimate the median proportional error
+
+median(y_hat - y /y)
+
+We could also do mean squared error
+
+Out of sample R\^2 is not inherently problematic, in sample it is inherently problematic
+
+*How can we get at causal questions*
+
+-   Often, we may have a lot of controls in addition to your causal variable
+
+-   Can be used to select instruments so no overfitting
+
+-   Causal random forests
+
+    -   We could split the whole sample on an X to maximize the difference between groups, and so on and so forth. And then we could create a whole random forest to get at heterogeneous treatment effects. One way we can use the forest is to create weights, and then we cold reestimate the effect with the weights to get the adjusted treatment effect.
+
+        -   Identification does not come from machine learning, but comes from the research design
+
+-   We could predict treatment effect given covariates ( and we could also predict treatment effects between subgroups
+
+-   

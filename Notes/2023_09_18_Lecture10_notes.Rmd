@@ -1,0 +1,151 @@
+---
+title: "PUBPOL 6090 Lecture 10 Notes"
+author: "Thelonious Goerz"
+date: "2023-09-18"
+output: pdf_document
+---
+
+**Cluster robust inference**
+
+**Overview**
+
+-   Skim miller and Cameron (1-2-4 sections)
+
+**Hierarchy of estimation goals**
+
+In order: Unbiased, correct inference, efficiency
+
+-   Hypothesis testing, construct testa statistic
+
+$$
+t = \hat{\beta}-\beta_0 / se
+$$
+
+Compare to reference distribution $T dist$
+
+Get probability of rejection of failing
+
+-   We need to be confident in beta and se estimates
+
+    -   $\hat{se}$ is approximating the sampling standard deviation of $\hat{beta}$ , we want our ses to represent the variability across the beta hats ( if we knew the true sampling sd) then we could plug that in to our test statistic, which would be distributed normal
+
+        -   We would compare that to a standard normal distribution $N(0,1)$
+
+-   Desireable properties (se hat is unbiased, and is unbiased under weak assumptions).
+
+Recall the sandwich matrix
+
+$$
+V(\hat{\beta}) = (X'X)^{-1} X'\Omega X \ (X'X)^{-1}
+$$
+
+This equation is going to depend a lot on $E[e'e']$ If $\Omega$ is independent then we have entries on the diagonal. Thus omega will be $\sigma^2 \cdot I$
+
+The estimate of the variance will be $\sigma^2 (X'X)^{-1}$
+
+Now consider a situation where we have heteroskedasticity
+
+$$
+\sigma^2_i 
+$$
+
+Where we have a diagonal matrix, but the errors are not homoskedastic. Further, they can also **not** be independent of each other. If we can estimate the functional form of the errors, then we can use that for FGLS
+
+Now imagine that there is heteroskedasticity and a different variance for each $\epsilon$ but we do not know what the functional form is
+
+-   Huber-White robust standard errors
+
+    -   Econometrica
+
+    $$
+    \Omega = \forall diag \ \sum \hat{\epsilon^2} 
+    $$ We use the sum of the squared residuals of the sum of the squared residuals
+
+-   When we plug this into omega hat matrix and then use that in the sandwich estimator, unbiased and noisy estimate on its own, but plugged into the sandwich estimate, **it is consistent for the true estimate for the true variance.**
+
+    $$
+    X' \Omega X = \sum_i^n x_ X' \cdot \hat{\epsilon}^3_i (\frac{\mu}{n-k})
+    $$
+
+**Cluster robust inference**
+
+In this case a variable $X_{ig}$ is indexed by unit i and group g, these grouped individuals may *have some relationship that is dependent* but the individuals *between groups have independent errors*
+
+-   A leading example is individuals clustered within states
+
+$$
+Y_{ig} = X_{ig}\beta + \epsilon_{ig}
+$$
+
+Therefore
+
+$$
+E[\epsilon_{ig} \epsilon_{ig}'] = 0
+$$
+
+These may be:
+
+$$
+E[\epsilon_{ig} \epsilon_{ig}'] \neq 0
+$$
+
+if they are in the same cluster. For instance, everyone in the state may have a common shock that affects each of the individuals $i$ in the dataset. The Omega matrix will have a large N x N matrix with a block structure. The diagonals will be matrices. In this case, we could decompose the $\epsilon_{ig}$ into
+
+$$
+\epsilon_{ig} = u_{ig} + v_{ig}
+$$
+
+Which are a common shock $u$ and an iid term $v$ which we then could construct an
+
+$$
+\hat{\Omega} = \hat{\sigma^2_u} + \hat{\sigma^2_v}
+$$
+
+which are based on these estimated variances . But we need to know the correct functional form of Omega, we would need there to be the common shock and iid component. If we were to *run this through FGLS it is equivalent to the random effects estimator, because we are modeling the group level and individual idiosyncratic level.*
+
+*A more general case*
+
+-   We think that we have within group correlation, but we do not know the structure, we can use clustering to account for it.
+
+Then the middle part of the sandwich estimator is
+
+$$
+\sum_i^g X'_g \Omega_g X_g
+$$
+
+*And the generic sandwich formula can be reduced to adding up many group level sandwich formulas.*
+
+Then we get the following clustered variance covariance matrix estimate
+
+$$
+V(\hat{\beta}) = (X'X)^{-1} \sum_i^g X'_g \Omega_g X_g \ (X'X)^{-1}
+$$
+
+Where we use the same plug-in type estimator and add it in
+
+$$
+\hat{\Omega} = \hat{\epsilon_{g}}\hat{\epsilon_g}'\\
+w \ dim \ n_g \times n_g
+$$
+
+Plugging in this estimate into our sandwich, we get
+
+$$
+V(\hat{\beta}) = (X'X)^{-1} \sum_i^g X'_g\hat{\epsilon_{g}}\hat{\epsilon_g}' X_g \ (X'X)^{-1}
+$$
+
+This will result in an unbiased estimate, but this is not consistent, because we are using the single *residual* observation, and as our data grows we only get more Gs, so still can't do averaging to get better properties....HOWEVER
+
+Like white-robust, this results in a consistent estimator as N grows
+
+$$
+\sum_i^g X' \hat{\epsilon_{g}}\hat{\epsilon_g}'x -> \sum_i^g X' \Omega_g X
+$$
+
+-   Key implications
+
+    -   What should the clusters be?
+
+    -   How many clusters do we need? G should be big to be a good estimate
+
+-   But there are no hard-and-fact rules of thumb

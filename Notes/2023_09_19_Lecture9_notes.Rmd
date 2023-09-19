@@ -1,0 +1,120 @@
+---
+title: "PUBPOL 6090 Lecture 9 notes"
+author: "Thelonious Goerz"
+date: "2023-09-19"
+output: html_document
+---
+
+**Agenda**
+
+1.  Regular SE computation in econometrics
+2.  robust, cluster inference
+3.  Few clusters and multiway clustering
+4.  advanced methods
+5.  current topics
+
+**Notes**
+
+Hierarchy of estimation
+
+-   unbiased/consistent $\hat{\beta}$ ,
+
+    -   Some biases stick around, and we do not have a fix (OVB, no N makes a diff or unmodeled nonrandom SEs will be biased as N grows).
+
+        -   There are also finite sample biases that disappear as we get more N
+
+-    correct inferences (bias of $\hat{se}$ .
+
+    -   How should we think about correct inference? Well if we have heteroskedastic data and we use normal standard errors, the estimates will be biased.
+
+        -   Recall the algorithm for hypothesis testing 1), compute t, 2) compare to t dist with n-k df, but if our SE is wrong, then this will lead to a biased t-statistic which will lead to incorrect hypothesis testing.
+
+    -   We could also have SEs that are unbiased but our t-distribution could go wrong, and we may not know what the reference distribution is. (Bootsrapping can help with finding the reference distribution.
+
+-   efficiency /sampling $var(\hat{\beta})$
+
+    -   Efficiency will increase the power that we have to make inferences and detect truly real or null results
+
+**Level 2 discussion**
+
+*Thinking about heteroskedasticity*
+
+Levels of error variance 1) errors are iid, 2) errors are inid (off diagonals are 0, so knowing one does not give you any info about the others, but the errors are not identical, 3) we could also have clusters with iid or inid errors which will have a block matrix formulation.
+
+*Robust SEs*
+
+suppose that we calculate
+
+$V_{ehr} = (X'X)^{-1} \sum X_i'X \epsilon_i \ (X'X)^{-1}$
+
+But we really have classic standard errors, its not a big deal because the robust errors are unbiased even in the presence of homoskedasticity (may be a bit more noisy)
+
+In the cluster robust case, it is also ok -- the inference is robust
+
+$$
+v_{clr} = (X'X)^{-1} \sum_g^n X_g \epsilon_g'X_g \epsilon_g \ (X'X)^{-1}
+$$
+
+It is also ok, if we cluster at different levels of clustering (blocks nested in tracts, or neighborhoods). In general, clustering at the higher level is better, but we cannot cluster a whole dataset because the $G = 1$ .
+
+-   In general, we want to make sure that we have enough clusters so that our estimation process is plausible.
+
+*Can we test clustering empirically?*
+
+Yes and no, it is possible but difficult
+
+1.  Based on the hausman test principle
+    1.  we have two estimators $\hat{\theta_1}, \hat{\theta_2}$ , 1 and 2 more and less strict assumptions
+        1.  1 is efficient and consistent, if true, but wrong otherwise
+        2.  2 is efficient and consistent, if true, but otherwise still consistent.
+        3.  We can compare them and see whether they are different to compare and see
+2.  We can do a bootstrap clustered and unclustered
+    1.  when clustering with bootstrap, then we will get the same thing as the cluster robust estimator but in a ***data driven way***
+3.  Why not use fixed effects? Well if the group level variation is the common shock and what is left over is iid after the FE absorbs the shock and then FE fix the clustering problem.
+    1.  We can partial out FEs with FWL for HDFE and or we dont want the FEs and clusters to be nested.
+4.  When might Cluster SEs get smaller?
+    1.  If the covariances of the $\sigma^2$ within clusters are negatively dependent, then the cluster will account for this that will decrease the se size. We generally think of these correlations being positive but this is not always the case. If we have an FE at the cluster level (everything becomes a deviation from the mean, which can induce SE shrinkage).
+    2.  This can also happen from sampling chance.
+
+**Level 3 discussion**
+
+What about few clusters and multiway clusters?
+
+-   In the JHR paper....
+
+-   suppose we cluster at the state level, where we have 50 clusters max, and we cannot increase this
+
+    -   Issues: there can be a type of overfitting that makes the SE small which results in a finite sample bias. The overfitting with small g comes from the $\hat{\epsilon_g}$ small. One solution to this is to use a correction to inflate these and fix the finite sample bias.
+
+Things to avoid
+
+-   Do not choose clustering level only based on the number of clusters (opt for the correction and use the cluster that is theoretically driven)
+
+    -   If the clusters are different sizes, the N of each state will dictate the influence on the clusters
+
+        -   Asymmetric cluster sizes and sampling weights that make the small clusters worse. This will increase the problems for high influence clusters
+
+Multiway clustering on non-nested
+
+-   Geography and occupation, we may want to account for dependence across epsilons for things that are not nested.
+
+    -   Suppose that we have professors in states, beause we are looking at occupations that are not nested, then the off diagonals of the block group matrix will have correlations between occupations between states. Not accounting for multiway dependence will lead us to assume that the off diagonal is 0, when it is not.
+
+    -   Notation
+
+$$
+\epsilon_{gh}\epsilon_{gh}' = 0  \ if \ g \neq g', h \neq \ h'
+$$
+
+Conditions (from discreate math)
+
+$$
+a \ or \ b = a+ b - (a \ and \ b) \\
+s \ or \ h = s + h - (s \ and \ h)
+$$ The second equation is the building block for cluster robust inference for twoway clustering. **punchline: a twoway cluster-robust estimator can be built upfrom three clusters (state, occupation, minus state by occupation clustering)**
+
+**To come back to**
+
+1.  Testing cluster level
+2.  bootstrap
+3.  fixed effects

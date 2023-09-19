@@ -1,0 +1,38 @@
+---
+title: "PUBPOL 6090 Lasso and Nonparemetric Regression Lecture"
+author: "Thelonious Goerz"
+date: "2023-09-18"
+output: pdf_document
+---
+
+**Lasso Regression**
+
+-   **Finish later**
+
+<!-- -->
+
+-   ML tools cannot help with OVB
+
+    -   In a situation where we have a lot of regressors, we can use lasso to select variables.
+
+Basics of lasso
+
+$$
+\hat{\beta} = argmin \sum_i^n (y_i - \sum_j^p x_{ij} \gamma_j)^2 + \lambda \sum_j^p |\gamma_j| y_j
+$$
+
+The approach minimizes the sum of the squared residuals subject to a penalty
+
+-   <div>
+
+    1.  The first two terms are normal OLS
+    2.  The third term is the lasso penalty term
+        1.  Gammas are penalty loadings --which adressess the scales of Xs. So that a variable's scale does not relate to the penalty
+    3.  Lambda are penalty terms -- higher the value equals more shrinkage
+        1.  Variables that are the least important will be shrunk to 0
+            1.  This causes bias in the estiamated beta
+    4.  people often do "postlasso"
+        1.  select coefs and then estimate OLS on the selected coefficients
+    5.  
+
+    </div>
