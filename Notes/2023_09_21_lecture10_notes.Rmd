@@ -1,0 +1,82 @@
+---
+title: "PUBPOL 6090 Lecture 10 Notes"
+author: "Thelonious Goerz"
+date: "2023-09-21"
+output: pdf_document
+---
+
+**Agenda**
+
+-   Standard errors and bootstrapping
+
+**Notes**
+
+*Nonparametric bootstrap*
+
+-   Create a sample of xy pairs at the i level
+
+    -   obtain a beta for each sample
+
+    -   Obtain the standard deviation of $\hat\beta$
+
+-   What is the bootstrapped SE reproducing?
+
+    -   $se_{iid}$ EHW, other?
+
+    -   We can also sample residuals -- which approximates the homoskedastic standard errors
+
+    -   For the basic bootstrap
+
+        -   The se is approximating the robust standard error. If the model has heteroskedasticity built into it, then that property should end up being expressed in the sampling
+
+        -   When we resample residuals, they become shuffled and reasigned to xs, which breaks down the score of $(x_i \epsilon_i$ which relates it to the iid. standard errors
+
+    -   When doing inference, we are generally indifferent to the efficiency of the estimated standard errors, and more interested in them being correct. For betas we are interested in the efficiency of them.
+
+-   When EHW standard errors are not feasible, then the bootstrap works in all cases (if you have any way to estimate beta we can compute SEs.
+
+*Cluster bootstrap*
+
+-   The next leading case is where we sample clusters g instead of individual i.
+
+    -   If we have small N and we only sample the treatment group, we can't estimate beta hat
+
+*Condition on x bootstrap*
+
+We keep the same xs and we just reassign epsilons
+
+-   If we are worried about weird samples for small treatement cases, we reassign ys but also impose homoskedasticity (big assumption)
+
+    -   can also do wild bootstrap to overcome this
+
+-   We can't vary the N, because the beta is a function of the sample size
+
+*Creating a reference distribution for inference*
+
+-   For each regression, we can make a t statistic for each and compare to T_n-k
+
+    -   We can also use the bootstrap to create a bootstrap distribution of ts and then compare our original t to the t-distribution
+
+        -   It addresses the problem of comparing to a reference distribution
+
+-   If we are drawing from a distribution where the null hypothesis is false, then the residuals will be true hypothesis distributed
+
+    -   If we want it to be the case that the null hypothesis is true, we can impose the null hypothesis when calculating residuals
+
+    *Other*
+
+-   it could be the case that you can bootstrap predictions to get an SE for the prediction
+
+Problem set 2
+
+-   One problems is going to be from the incentives to learn paper,
+
+    -   trying to approximate $(y_1 - y_0 | x_b)$
+
+        -   estimate change in test scores conditional on baseline
+
+        -   two locall linear regression, then difference them and plot them with a 95% confidence interval of that difference
+
+    -   How do we get the confidence interval (est +/- 1..96 \* se
+
+    -   **In this case to get the 95% confidence intervals, we can use bootstrapping to get ses for local linear regression.**

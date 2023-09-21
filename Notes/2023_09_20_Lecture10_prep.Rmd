@@ -1,0 +1,83 @@
+---
+title: "PUBPOl 6090 Pre Lecture Notes"
+author: "Thelonious Goerz"
+date: "2023-09-21"
+output: pdf_document
+---
+
+**Bootstrapping**
+
+-   A way to simulate standard errors by re-sampling
+
+**Notes**
+
+-   bootsrap involves simulation, SEm and
+
+-   Analogue estimation principle
+
+    -   A lot of estimation approaches fit under this rubric
+
+    -   Suppose that we have a true but unknown data
+
+    -   Then we have a statistic of interest that summarizes the true distribution of data, that we are trying to learn about.
+
+        -   Suppose that we further have a sample, take an average, and then we want to learn about the beta and the sampling distribution of betas
+
+    -   Manski notes that a common and effective strategy is the *plug in principle*
+
+        -   We have a random sample from the underlying distribution, which is a discrete distribution, and it has point mass 1/n at each observed value of x, and while it is not like the true distribution, as we get more N we get closer and closer to the real distribution
+
+    -   The analogue estimation principle says lets take $\theta$ and plug in the estimated $\hat{f}$
+
+    -   If we want $\hat{\mu}$ , we would take the same statistic and then plug in the $\hat{f}$ like so
+
+        $$
+        \hat{\mu} = \int x d\hat{f(x)} = \\
+        1/n \sum x_i 
+        $$
+
+    -   The sample average is the estimate of the population mean
+
+-   The principle: You write the population average as a function of the sample mean, to get at the underlying distribution, you plug in your estimated quantity.
+
+-   Our estimated Se becomes
+
+$$
+\hat{se} = 1\ \sqrt{n} (\sum 1/n (x_i - \bar{x}^2)^{1/2} => 1\ \sqrt n \hat{sd}
+$$
+
+-   In this principle, it does not allow for degrees of freedom correction.
+
+*Statistical inference*
+
+-   We have a population, and a distribution of $\hat\beta}$ and we want to know the sampling standard deviation, so we take our se and create a test statistics.
+
+    -   If we know the true DGP and we want to estimate the standard deviation, we could simulate data, get a beta hat, and then get an estimate of the sampling standard deviation of the beta hats from the sd of that standard error.
+
+        -   The problem is that we do not know the true DGP
+
+    -   The anaologue **estimation principle comes in** , what if we use the empirical $\hat{f}$ dgp as a stand in for the DGP $\hat{\beta}$ SD.
+
+    -   It will be $1/n prob \ of \ x_i$
+
+        -   When we draw a monte carlo sample from this, the key thing is that we are going to going to take draws from that distribution form with replacement *from a distribution (the sample realization that we have) which has a finite N values,* so if we drew without replacement, then we would get the same sample.
+
+            -   Once we draw with replacement a sample of size N, we can compute a beta hat and then resample N times, and then we are left with a distribution of beta hats, which allow us to calculate the sd of them.
+
+            -   And this is the bootstrap standard error
+
+    -   The primary advantage of the bootstrap, is that we are supplementing analytical difficulty for computational power. IF the SE formula is hard to compute, we can bootstrap to get a simpler solution. If we have a nonparametric regression, the standard errors may be hard to calculate -- so we can use the bootstrap to get them easier
+
+    -   The second advantage, for certain types of statistics (e.g., t) in each bootstrap, we could compute **any** statistic that we want. The t statistic has the property of being asnymptotically pivotal, so for these AP statistics, the bootsrtrap distribution will give you a more accurate distribution than the classic T estimate.
+
+        -   The bootstrap works well when you are computing statistics that are maximizers or something
+
+        -   it can brake down when we are trying to compute a rank order statistic like the maximum.
+
+        -   In time series work, order of the observations matters (years), but when we bootstrap, we are creating different samples, which means we are loosing dependencies in the data structure.
+
+-   How many bootstrap replications do you need?
+
+    -   More replications are better (probably 100 or 200)
+
+    -   If we want to compute quantiles - we need more rather than just creating the mean

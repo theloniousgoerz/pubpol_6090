@@ -23,13 +23,15 @@ Hierarchy of estimation
 
         -   There are also finite sample biases that disappear as we get more N
 
--    correct inferences (bias of $\hat{se}$ .
+-   correct inferences (bias of $\hat{se}$ .
 
-    -   How should we think about correct inference? Well if we have heteroskedastic data and we use normal standard errors, the estimates will be biased.
+```         
+-   How should we think about correct inference? Well if we have heteroskedastic data and we use normal standard errors, the estimates will be biased.
 
-        -   Recall the algorithm for hypothesis testing 1), compute t, 2) compare to t dist with n-k df, but if our SE is wrong, then this will lead to a biased t-statistic which will lead to incorrect hypothesis testing.
+    -   Recall the algorithm for hypothesis testing 1), compute t, 2) compare to t dist with n-k df, but if our SE is wrong, then this will lead to a biased t-statistic which will lead to incorrect hypothesis testing.
 
-    -   We could also have SEs that are unbiased but our t-distribution could go wrong, and we may not know what the reference distribution is. (Bootsrapping can help with finding the reference distribution.
+-   We could also have SEs that are unbiased but our t-distribution could go wrong, and we may not know what the reference distribution is. (Bootsrapping can help with finding the reference distribution.
+```
 
 -   efficiency /sampling $var(\hat{\beta})$
 
