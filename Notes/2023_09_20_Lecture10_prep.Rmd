@@ -81,3 +81,89 @@ $$
     -   More replications are better (probably 100 or 200)
 
     -   If we want to compute quantiles - we need more rather than just creating the mean
+
+**More on bootstrapping**
+
+-   we can bootstrap many different test statistics
+
+    -   We rank these from smallest to biggest, then compare our estimated T on the true data to the percentile, to get an idea of the percentile T
+
+    -   If we are testing a true null hypothesis, then we can compare it to the distribution of test statistics
+
+        -   We may want to subtract off the average T
+
+-   we can also obtain a distribution of beta hats to characterize the estimates
+
+    -   Rank order them and compare them to the distribution.
+
+    *How do we form our bootstrap sample*
+
+    \* Nonparametric pairs bootstrap
+
+    -   Sampling the pair X,Y for individual i
+
+    -   We can also do a conditioning on Xs bootstrap, where we hold X fixed and resample Y
+
+        -   Few clusters, some treated some control ( we need balance)
+
+-   Residual boottstrap
+
+    -   We can do residual bootstrap (hold XBeta X_i fixed and bootstrap the residuals and combine them on to that regression
+
+        -   we get Y_ib and X_ib which we can regress
+
+-   Wild bootstrap
+
+    -   Generate bootstrapped residuals each time $\epsilon_{ib}$
+
+    -   We sample from a made-up distribution and take those residuals as a function of $\epsilon_{ib} = \omega_{ib} = \epsilon_i$
+
+        -   $\omega$ is a weight where we randomly flip -1 or 1 and add that in the bootstrap
+
+        -   Using this random -1,1 works even though its "wild"
+
+-   Tradeoffs between residual and wild
+
+    -   Both are useful if we want to keep the distribution of our Xs fixed across sample
+
+    -   Residual and wild both have the property of $Cor(x_i,\epsilon_i) = 0$ because we are randomly assigning y or -1,1.
+
+    -   The residual bootstrap is drawing Xs and errors at random so, $Cor(X_i, \sigma^2) = 0$ which will produce homoskedastic errors
+
+        -   Tells you the truth **if the errors are homoskedastic**
+
+    -   On the other hand, the wild bootstrap will **preserving the variance** of the underlying data and more likely to be heteroskedastic-robust if that is the underlying error structure.
+
+-   The $E[\omega_i] =0$ , (weights are -1, 1).
+
+    -   $E[\omega_i^2] =1$
+
+*%T Bootstrap*
+
+-   Can reach asymptotic refinement
+
+    -   How is the t-statistic distributed?
+
+        -   in the limit $\lim E^* \sim I(\theta)$
+
+        -   We can compare this t to a standard normal to see how extreme it is
+
+    -   In finite samples T statistics is of order $1/n$ correct
+
+-   We can write the distribution of t as an edgeworth expansion (which is basically a Taylor series for distributions$t \sim I(t) \times 1/ \sqrt N + pdf(N(0,1)) + o1/N$
+
+    -   If the first term does not depend on anything, then the term is said to be asymptotically pivotal
+
+-   The key idea: if we are doing a bootstrapped t and combining it with an asymptotically pivotal statistic, there will be an improvement in the efficiency of the estimator
+
+*Cluster robust bootstrap*
+
+-   We sample at the G cluster level so that we preserve the intra-cluster correlation
+
+    -   Residual cluster bootstrap requires same size clusters to be implemented
+
+-   For wild, you get the -1,1 and whichever it is, the entire cluster is scaled by the value you get
+
+-   we can do N-G cluster correction which we can improve on reject rate with
+
+-   
