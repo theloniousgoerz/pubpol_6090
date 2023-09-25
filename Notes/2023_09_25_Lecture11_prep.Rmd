@@ -1,0 +1,142 @@
+---
+title: "PUBPOL 6090 Lecture 11 Prep"
+author: "Thelonious Goerz"
+date: "2023-09-25"
+output: pdf_document
+---
+
+**To read**
+
+Gruber, Jonathan, Phillip Levine, and Douglas Staiger, 1999 \"Abortion Legalization and Child Living Circumstances: Who is the \"Marginal Child?\" Quarterly Journal of Economics.
+
+**Notes**
+
+*Differences in Differences (2x2)*
+
+Motivation: We do not trust pre-post estimators, but there may be instances where we do believe that there is an effect. How do we use this?
+
+Identifying assumption for pre-post design: The pre-trend provides a valid estimate of what the truth would be in the absence of treatment. $\beta_{t=0,\tau =1} = \beta_{t=0,\tau =-}  =\beta_{t=1,\tau = 0}$
+
+Another design problem "Ashenfelter dip"
+
+-   The process of signing up for a program often because of a negative shock. Suppose a job training program:
+
+    -   This means that people who are treated are not random and different from people who did not take the program
+
+    -   Reversion to the pre-dip mean may seem like a treatment effect but it isn't
+
+        -   Curse of the businessweek cover. Not really a curse, just luck to get there, then reversion to the mean.
+
+Identifying assumption for basic cross-section treat/control comparison: The comparison group provides a good estimate of what the treated group would have looked like *had they not been treated.*
+
+-   We generally think this assumption is not credible because errors may be correlated with unobserved information, treatment may not be randomly assigned.
+
+Key idea: While these assumptions on their own may not be credible, difference in differences takes these ideas and combines them.
+
+We get a new identification strategy
+
+1.  Before and after design
+2.  Control and treatment group
+3.  Before after difference for the controls and the before after difference for the treated units
+
+$$
+\tau_{did} = (Y_{T,t=1} -Y_{T,t=0}) - (Y_{C,t=1} - Y_{C,t=0})
+$$
+
+Identifying assumption of DID: Parallel pre-trends of treated and control groups.
+
+$$
+\Delta_C = \Delta_T
+$$
+
+Change over time of treated had they not been treated.
+
+See Gruber (1984) Mandated Maternity Benefits on hourly wages
+
+*Implementing DID in regression*
+
+$$
+Y_i = \beta_0 + \beta_i Treat + \beta Post + \beta Treat \times Post + \epsilon_{i}
+$$
+
+Difference between dummy variables and fixed effects
+
+-   As we get more data, we are going to have N-1 dummy variables for FEs, where as in the binary treatment case we just have 1 or 0.
+
+DID terms
+
+1.  Control, before period = $\beta_0$
+2.  Control, after period = $\beta_0 + \beta Post$
+3.  Treatment, before period = $\beta_0 +\beta Treat$
+4.  Treatment, after period = $\beta_0 + \beta Treat + \beta Post + \beta Treat\times Post$
+
+So The DID coefficient is the interaction term $\beta Treat\times Post$
+
+Changes-in-Changes (Athey and Imbens) - Idea: take the DID key ingredients (differences in the mean differences between treat and control) \~ what if we extend this to think about other changes (quantile changes). How does the distribution change?
+
+*Triple differences (diff-in-diff-in-diff)*
+
+Setup
+
+1.  We have treatment states and control states
+2.  We have a before and after period
+    1.  We may be worried that the parallel trends assumptions are violated if these states are following distinct labor market or demographic trends.
+3.  So, we could consider groups that might not be affected by the policy, labor market, etc.
+    1.  What is the underlying story? If the economic environment is systematically changing in each state, we can test this.
+    2.  If we have some group that is subject to the same economic conditions but not affected by the policy (e.g., men are not affected by maternity benefits).
+        1.  The outcomes of those groups would reflect the underlying economic changes but not the policy change
+4.  Idea: Run the DID on just men as a placebo test for the policy change -- if we get no effect, that is a good sign, if we do not get a 0, this is a sign that there is something going on other than the policy.
+    1.  We can then take this difference for the men and difference it out of the women
+
+$$
+\tau_{DDD} = ((Y_{T,W,t=1} -Y_{T,W,t=0}) - (Y_{C,W,t=1} - Y_{C,W,t=0})) \\ - ((Y_{T,M,t=1} -Y_{T,M,t=0}) - (Y_{C,M,t=1} - Y_{C,M,t=0})) 
+$$
+
+*Triple difference in regression context*
+
+1.  Outcome Y
+2.  Treatment (0,1)
+3.  Pre, Post
+4.  Group (M,W)
+
+We obtain $DID_M,DID_W$
+
+$$
+y = \beta_0 + \beta Post + \beta Treat + \beta Female \\ + \beta Post \times Treat + \beta Post \times Female + \beta Treat \times Female + \\ \beta Post \times Treat \times Female + \epsilon
+$$
+
+Where The Post, Treat, Gender interaction is our DDD term.
+
+-   We can also include K interactions to look at different dimensions of confounding
+
+*Extension of 2xT or an NxT difference in differences*
+
+-   Changes our subscript notation
+
+    -   Individual within a state at time t
+
+    -   $Y_{ist}$ , guides our analysis by the level that it is happening at
+
+-   We could also add State and Time fixed effects
+
+    -   These effects subsume the intercept
+
+$$
+y_{ist} = \beta Treat \times Post + \alpha_s + \phi_t + \Lambda_i + X_{st} + \epsilon_{ist}
+$$
+
+-   Phi and Alpha are panel fixed effects
+
+    -   But these might not make as much difference, they may soak up some variation but might not make a difference in the estimates.
+
+        -   Efficiency
+
+-   When we have a longer t panel, we can test some of the identifying assumptions
+
+*Panel fixed effects*
+
+-   We can write our model even when we have a continuously variable treatment "identification comes from switchers
+
+    -   Relies on some states switching to a policy, can't resolve with FEs because they will perfectly predict the policy variation (colinearity)
+
+    -   You also need people who 'never switch" which if none, would create prediction issues with time.
