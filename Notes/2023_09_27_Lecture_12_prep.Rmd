@@ -1,0 +1,72 @@
+---
+title: "PUBPOL 6090 Pre-lecture Notes"
+author: "Thelonious Goerz"
+date: "2023-09-28"
+output: pdf_document
+---
+
+**Panel fixed effects and difference in differences**
+
+Discuss the role of time and unit dummies to reduce confounding
+
+Unit specific time trends can be controlled for
+
+-   $y_{st} = \beta Treat X Post + \alpha_s + \lambda_t + time_t X \delta_s$
+
+    -   the $time_t X \delta_s$ term allows for there to be a different coefficient of time for each different state
+
+        -   We can also do time \* treated to control for trends
+
+If the treatment and control difference does not have a linear time trend
+
+-   We can add in a $time_t^2 + \delta2_s$ to add a quadratic state-specific time trend.
+
+    -   When we add in state-specific trends
+
+        -   They will control out variation
+
+            -   This can also reduce variation in treatment which can make estimates noisy
+
+            -   Also... changes our identifying assumptions
+
+                -   Net of overall trends, the deviations of the changes in control units from treated are parallel (basically)
+
+            -   Possibility of introducing trends as a bad control or overcontrolling problem
+
+                -   Treatment effects can have trends, if the treatment effect has a trend and we control for pre-trends, this will bias the main estimated treatment effects
+
+**Statistical inference**
+
+-   FEs remove common shocks, so we don't have to worry about SEs,
+
+    -   But there could be autocorrelation between units
+
+    -   What does the time-trend look like when we partial out the unit fixed effects
+
+        -   Then partial out time fixed effects
+
+            -   Either post variable or gamma t (deviations from within-time means)
+
+    -   We can get an idea of what is driving the treatment variation
+
+        -   This induces autocorrelation (e.g., the value of pt today is correlated with the next day)
+
+            -   What this means is that Within-state, the key variables net of controls are correlated with each other (positively autocorrelated). Errors too
+
+    -   This motivates clustering at the unit level to reduce this intra cluster correlation
+
+*Cluster robust panel FE and (short panel T)*
+
+-   Different ways to do fixed effects
+
+    -   FE or deviations from means?
+
+        -   Both are equal
+
+        -   But we can get different SEs, also different degrees of freedom
+
+            -   How do we compute DF, do we include G fixed effects when doing deviations from means
+
+            -   This can be a problem when N and K are similar
+
+            -   ses are different by a factor of sqrt t/(t-1)

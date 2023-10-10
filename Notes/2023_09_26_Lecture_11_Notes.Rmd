@@ -1,0 +1,114 @@
+---
+title: "PUBPOL 6090 Lecture 11 Notes"
+author: "Thelonious Goerz"
+date: "2023-09-26"
+output: pdf_document
+---
+
+**Agenda**
+
+Problem set 2 - due in two weeks
+
+-   Bootstrapping, nonparam, experiments, and prediction
+
+    -   MSE and Median Absolute Proportional Error
+
+**Notes**
+
+Median absolute percent error
+
+$$
+y_i, \hat y \\
+|y_i, \hat y | \\ 
+MAPE = Median(|y_i, \hat y | /y_i)
+$$
+
+$$
+MSE = bias^2+var
+$$
+
+*Pset 1*
+
+-   li - linear interpolation
+
+-   age forward
+
+-   age backward
+
+*Difference in differences*
+
+2x2
+
+-   In the 2x2 case, we cannot test the parallel trends assumption
+
+2xt
+
+-   Many t before treatment and 1 period after treatment
+
+    -   we can test the parallel trends assumption. We should want them to be in lock step
+
+        -   Regress y on the estimated pre-trend data
+
+            -   Y = trend + t\*treat
+
+                -   If we fail to reject we believe that the pre-trends are parallel
+
+                    -   Need to look at the trend lines (different functional form issues can complicate this)
+
+        -   We could run placebo DID regression on the pre-period
+
+    -   We could also regress t1..t3 \*treat in pre period to assess the parallel trends
+
+    *assessing credibility*
+
+-   Believeable versus interesting
+
+    -   Need to find a balance between believe- ability
+
+*What to do if parallel trends fail*
+
+-   Seek a different control group where parallel trends match
+
+    -   Goes down the logic of synthetic control
+
+    -   A little less credible because it had to be found. This can be problematic. Card Mariol Boatlift chose Calif, TX, etc. which were validated with synthtic control
+
+-   We can also control for variables and see if they are parallel net of controls
+
+    -   y_ist = time\*treat + X_it
+
+        -   Plot the time\*treat
+
+-   We could also directly control for trends
+
+    -   could to treat \* time to control for the pre-period trends
+
+    -   Can be issues with dynamic treatment effects post-treatment
+
+-   Event studies are in event-time, different tests to calculate pre-trends
+
+*Choice of time window*
+
+-   2x2 - no choice
+
+-   2xt, which do we choose?
+
+    -   We can choose different pre and post trends
+
+    -   There may be announcement effects (two different treatments)
+
+-   In post period, there may be a delay in take up of the treatment
+
+*Triple differences*
+
+-   We need all of the two way interactions for the model to work
+
+    -   Coefficient of interest is the three-way interaction term
+
+-   Heterogeneity analysis, we can recover this in the triple difference scenario or we can stratify by gender and then re-run the analyses
+
+-   What is the pre-trend for triple difference?
+
+    -   One answer is that it applies to each of the two ways -- to strong
+
+    -   Something like: violations of PT for men tell us about violations in PT for women

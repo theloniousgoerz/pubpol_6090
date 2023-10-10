@@ -7,7 +7,7 @@ output: pdf_document
 
 **To read**
 
-Gruber, Jonathan, Phillip Levine, and Douglas Staiger, 1999 \"Abortion Legalization and Child Living Circumstances: Who is the \"Marginal Child?\" Quarterly Journal of Economics.
+Gruber, Jonathan, Phillip Levine, and Douglas Staiger, 1999 "Abortion Legalization and Child Living Circumstances: Who is the "Marginal Child?" Quarterly Journal of Economics.
 
 **Notes**
 
@@ -15,7 +15,7 @@ Gruber, Jonathan, Phillip Levine, and Douglas Staiger, 1999 \"Abortion Legalizat
 
 Motivation: We do not trust pre-post estimators, but there may be instances where we do believe that there is an effect. How do we use this?
 
-Identifying assumption for pre-post design: The pre-trend provides a valid estimate of what the truth would be in the absence of treatment. $\beta_{t=0,\tau =1} = \beta_{t=0,\tau =-}  =\beta_{t=1,\tau = 0}$
+Identifying assumption for pre-post design: The pre-trend provides a valid estimate of what the truth would be in the absence of treatment. $\beta_{t=0,\tau =1} = \beta_{t=0,\tau =-} =\beta_{t=1,\tau = 0}$
 
 Another design problem "Ashenfelter dip"
 

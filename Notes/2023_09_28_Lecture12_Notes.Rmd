@@ -1,0 +1,110 @@
+---
+title: "PUBPOL 6090 Lecture 12 Notes"
+author: "Thelonious Goerz"
+date: "2023-09-28"
+output: pdf_document
+---
+
+**Agenda**
+
+-   Partialing out
+
+-   State-specific trends
+
+-   short panel FE DOF
+
+-   Inference
+
+-   Next week 2\* reading
+
+------------------------------------------------------------------------
+
+**Partialing out**
+
+*Frisch Waugh Lovell*
+
+-   In the difference in difference example we can partial out the $i$ level fixed effects or the treated dummy
+
+    -   Once we are controllig for the treated dummy that is the same level as an $\alpha_i$ FE.
+
+    -   If we control for the time dummies
+
+    -   Then the variation that we are getting is the same variation being used for the $\beta Treat X Post$
+
+-   Once we difference out the fixed effects, the control and treated units are both contributing variation to the estimated coefficient
+
+    -   If we have differential timing of treatment, with ultimately everyone being treated, we could still identify treatment without having to worry about colinearity
+
+-   Bertrand, Duflo, Mullinathan - n x t panel, 2 x 2 panel does not have some of the same issues as n x t.
+
+    -   In 2x2 you cannot observe state-year shocks, so we have to assume that there is not any intergroup correlation
+
+-   $(X, \epsilon_i)(X,, \epsilon_i)$
+
+    -   Xs are correlated epsilons are correlated
+
+    -   $v(X \epsilon)$ is the score which is the $X' \Omega X$ in the sandwich formula, for the score to be correlated, we need the epsilon and the Xs to be correlated
+
+-   Suppose we have individuals in states who get treatment, not all states get treatment, but not assigned at the state level
+
+    -   Should we cluster at the state level or the unit level?
+
+    -   Should we cluster the SEs at the state level?
+
+    -   How do we think about what the. panel is?
+
+        -   We have a literal i-year panel and a conceptual pane state-year
+
+$$
+Y_{ist} = \beta D_{st} + \alpha_s + \delta_t + \epsilon_{ist} \\ or \  \gamma_i
+$$
+
+-   The punchline here is that the result will be basically the same even if we have the fixed effects at different levels
+
+    -   We are left with the same residual variation which determines our coefficient ( This depends partially on whether the panel i and t are neatly balanced)
+
+        -   We have a chance to improve precision $\gamma_i - \phi Treat$ is in the error term which may soak up variation in error.
+
+-   In general -- we want to cluster standard errors at the state level, if we cluster at the i level, then we assume independence across observations which may be problematic (cluster -ses assume that there is correlation between units in the state)
+
+-   If you cluster at too small level, clustering at the i level assumes independence between is, which leads to a vocov which inputs 0s where they maybe should be. Not clustering and clustering at too small a level are similar.
+
+    -   We want to cluster at the level where we are *worried about the correalation between errors*
+
+-   What about spillovers between states
+
+    -   Could choose a spatially far control
+
+        -   This could be problematic
+
+    -   Model the spatial error to account for these issues
+
+*Short panel FE DOF*
+
+-   We do not want to count unit specific degrees of freedom in df correction calculation whe clustering standard errors
+
+    $$
+    g xt / gxt -k \ v\ gxt /g xt -k - g
+    $$
+
+-   Order of magnitude difference is $1/T$
+
+    -   All of this concerns the DOF, Betas are fine, the $(X'X)$ and epsilon residuals will be the same
+
+    -   Areg partials out but does not include the dof correction (xtreg does not correct dof)
+
+    -   What does R do?
+
+*Key ideas*
+
+-   Need to get parallel trends right
+
+-   Could include state-specific time trends to account for lack of parallel trends
+
+-   Does controlling for trends work?
+
+    -   If we have variation in treatment effect, the time trend can bias the treatment effect. We could also estimate time trends just on the pre-period but this requires more work.
+
+-   What about state specific trends versus interaction between state dummies and year specific fe, the latter is a bit different. We can't do it because it leaves no variation in the panel to predict treatment effect. Removes all variation in our policy variable
+
+-   

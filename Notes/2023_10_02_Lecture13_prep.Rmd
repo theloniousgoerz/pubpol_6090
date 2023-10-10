@@ -1,0 +1,145 @@
+---
+title: "PUBPOl 6090 Lecture 13 Prep"
+author: "Thelonious Goerz"
+date: "2023-10-02"
+output: pdf_document
+---
+
+**Differences in differences**
+
+*Panel Fixed effects*
+
+-   2 x n Typical setup
+
+$$
+Y_it = \beta_0 + \beta_1 treat + \beta_2 post + \beta_3 post \times treat + \epsilon_it
+$$
+
+-   We can run this as a first differences model (which takes the Y at time 1 and subtracts of time 2.
+
+    -   T = 1 after, 0 before
+
+    -   $(Y_i 1-Y_1 0)$
+
+        -   the $\beta_0$ will get differenced out
+
+        -   The intercept is $\beta_1$
+
+        -   $\beta treat$ gets differenced out
+
+        -   $\beta treat \times post$ will be 1-0 for treated units and 0-0 for the controls
+
+        -   The error will be $\Delta \epsilon$
+
+Which yields
+
+$$
+(Y_i1 - Y_i0) = \beta_1post + \beta_3 Treat + \Delta \epsilon_i \\
+\beta_3 Treat = \beta_3 Treat \times Post
+$$
+
+We can also include control variables $\Delta X$ The intercept $\beta_1 Post$ is the growth in the Ys over time and the treatment term is the growth in the treated units.
+
+This model is relevant for a 2 period panel, but at as we get larger panels. In a multi-period model then the binary treatment variable will be *whether this is the two period treatment window where treatment happens.*
+
+The model is also equivalent to
+
+$$
+Y_i1 = Y_i0 + \beta_1 post + \beta_3 treat + \epsilon_{it}
+$$
+
+Quasi difference in difference (Lalonde)
+
+*Fixed effects*
+
+What is it that adding in fixed effects do?
+
+-   Family fixed effects model
+
+```         
+-   Controlling for bad variation
+
+-   Isolating "within variation"
+
+    -   Nothing to do with variation across (between individuals)
+```
+
+-   try to isolate variation within a specific group. The motivation is that we think that the within group variation is more likely to be exogenous compared to the variation across families.
+
+-   In a difference in difference setting, we use the FEs to make it so that the control and treated units do not have the same potential outcomes. So FEs control *constant differences in their potential outcomes over time* so whatever is left over is the variation that we want.
+
+Fixed versus random effects
+
+Write as $\alpha_i$
+
+Assumptions of FE
+
+$E[\epsilon|X,\alpha] = 0$ The epsilons are independent of the Xs once we condition on the fixed effects. Its OK for the fixed effects to be correlated with the Xs $CorX,\alpha)$ is ok.
+
+Assumptions of RE
+
+-   $E[\epsilon|X] = 0$ epsilons are independent of X
+
+-   $E[\alpha_i |x_{it}] = 0$ also, alpha at the i level is independent of alpha
+
+Ways to think about $\alpha_i$
+
+FE - incidental parameters. We are not interested in the actual values, but we are interested in the variation they take away. We are interested in beta. As we get more N, we get more parameters for FEs.
+
+RE - As are random draws from a distribution. The alphas are an incidental shock from a distribution (the parameters are not really interesting, it is *what are the parameters of the distribution that alpha_i is drawn from). often* $\alpha \sim N(0,1)$ We want to know what the variance and mean of the random effects are.
+
+*Implementation*
+
+FE - dummies or deviations from means
+
+RE - 1 - do MLE where we model the distribution of the alphas and epsilons, 2- estimate beta between and beta within. RE are a weighted average of within and between
+
+*Limitations*
+
+-   FE -uses less info, can not directly estimate i level covariates because i level and Fe are colinear, within i independence of epsilon is a strong assumption. Incidental parameters problem
+
+-   RE - independence of alpha conditional on X is a strong assumption, unless random treatment assignment
+
+*Extensions*
+
+FE
+
+FEs for different dimensions (state year) twfe
+
+i specific time trends
+
+interactions btw FEs and other Xs
+
+RE
+
+Random coefficients model, each i has its own slope
+
+*Other*
+
+Use hausman test to differentiate RE FE
+
+May want to cluster on i for either model
+
+*Mundlak and other computational issues*
+
+-   There are computational issues when you have a lot of data and many fixed effects
+
+    -   This can be really problematic, particularly matrix inversion
+
+-   We could do FWL to make this easier, but if we have n and a large T, this will not work because of the larger time dimension.
+
+-   Mundlak regression
+
+    -   If we have an it model and we are worried about the i level fixed effects. if we are worried that $\alpha$ is correlated with the Xs
+
+    -   If we regress X on alpha = we get bar X
+
+-   What if we included $\gamma \bar{x}$ in the regression. We can add in X average in as a control. Wooldridge shows that the mundlak approach works in nonlinear models and it is also less computationally intensive. We could have more X bars which solve this incidental parameters problem.
+
+-   Group-level is regressor of interest
+
+    -   two-step model, estimate the model with the alpha i and then add in that fitted as a control in the second step regression
+
+    -   Value added models
+
+    -   

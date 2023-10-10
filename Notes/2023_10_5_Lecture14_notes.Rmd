@@ -1,0 +1,68 @@
+---
+title: "PUBPOL 6090 Lecture 14 Notes"
+author: "Thelonious Goerz"
+date: "2023-10-05"
+output: pdf_document
+---
+
+**Agenda**
+
+-   LaLonde discussion
+
+-   More on fixed effects
+
+------------------------------------------------------------------------
+
+**LaLonde**
+
+-   How do non-experimental methods stack up to experimentally determined results.
+
+-   Table 4 (6) and (7) we could do -did - regress $\delta Y_i$ on $\beta treat$
+
+    -   8, 9 regress $\delta Y_i$ on $\beta treat$ + $\gamma Y_i{1975}$
+
+-   Specification is very important for results. Results are also very sensitive to the control group that the treatment is being compared to.
+
+-   Heckman and Hotz critique, better specification tests and richer controls can fix this
+
+    -   statistical models and shore leather is critical of Heckman and Hotz
+
+-   Ashenfelter dip type issues -- if people are signing up for a training program right after they get laid off, they have a dip in income and then the training program brings the income back up to where it was.
+
+**Nikell Bias**
+
+-   relevant for local projections
+
+    $$
+    y_{it} = y_{it} \ 1 + \alpha_i + \epsilon_{it}
+    $$
+
+-   If t is small, in principle they are unbiased but will be inconsistent. The alpha i will include of them the luck of the draw epsilons. If t gets bigger, we expect the epsilons to go to 0. Once we condition on alpha i, it is like we are doing deviations from means for everything else
+
+    -   Lagged y is a concern in this context
+
+    -   lagging the dependent variable can be avoided (bad intution but common)
+
+**Looking forward**
+
+-   Local projections
+
+-   Event study models to deal with dynamic treatment effects
+
+**Multicolinearity**
+
+-   Age-cohort-time
+
+    -   The challenge is that in a model, we can think of unobservables that load on to fixed effects that we are interested in. Early life conditions can effect outcomes. We want to control for age, period, and cohort effects
+
+    -   Cohort + age = time
+
+        -   Two dimensions in a three dimensional space. In each of these three dimensions, we can only ever observe two of these dimensions at one time.
+
+            -   We induce multi-colinarity when we include age, period, anc cohort dummies. If we have these as controls, it doesn't matter which one we drop. If the age period and cohort are of interest, then it. matters which one we drop.
+
+            -   If we include an age-year dummies to fix the problem, we could also include other cohort-age, cohort by period dummies, but includes more controlling.
+
+            -   We could also impose restrictions (that over time business cycle effects go to 0) this is a big assumption.
+
+            -   

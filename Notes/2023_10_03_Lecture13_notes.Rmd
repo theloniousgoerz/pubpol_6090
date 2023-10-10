@@ -1,0 +1,90 @@
+---
+title: "PUBPOl 6090 Lecture 13 Notes"
+author: "Thelonious Goerz"
+date: "2023-10-03"
+output: pdf_document
+---
+
+**Discussion notes**
+
+Duflo (2001)
+
+Conceptual story
+
+-   Oil money -\> school construction -\> education - \> adult earnings
+
+Research design
+
+-   Identification strategy
+
+    -   where and when people are born is "as good as random" which we can use to assign treatment
+
+    -   School construction happens at district i, and cohort c
+
+        -   Birth year may have an affect on earnings (omitted variables - economic conditions at the time).
+
+-   Difference in differences (similar to panel fixed effects)
+
+    -   school construction on education - DID
+
+        -   We can use a high v low exposure approach
+
+        -   Time is not calendar time, but cohort time.
+
+        -   What is the pre and post
+
+            -   post = born younger in 1995, but can experience the program
+
+            -   pre = older ages, in 1990
+
+        -   What is the treatment and control
+
+            -   Variation in the intensity of exposure to the treatment. Some areas had more schools than others.
+
+    -   education on earnings - IV strateg
+
+-   Punchline:
+
+    -   Table 3 - wald tests of did of log wages / did years of education to get the reduced form IV estimate
+
+        -   Table 4 and table 7
+
+            -   Table seven contains IV estimates of the returns to schooling
+
+-   Estimating equation (1)
+
+    $$
+    S_{ijk} = c + \alpha + \beta + (P_iT_i)\gamma_i + (C_j T_i) \delta_1 + \epsilon_{ijk}
+    $$
+
+    -   PT is the DID interaction term
+
+    -   CT is the interaction between region specific variables and T which is a dummy of whether the person was in the younger cohort
+
+-   Data setup
+
+    -   T = 0,1 (born earlier, born later)
+
+    -   C = Region,
+
+    -   P = 1,2,3..k schools built in region j
+
+**Fixed effects**
+
+-   FE v RE
+
+    -   $\alpha_i$ can be many FEs N x T
+
+    -   between is the between group regression $\bar{Y} = \bar{X}$
+
+        -   between ring assumptions is that Alpha is uncorrelated with the Xs
+
+            -   Two different sources of variation
+
+    -   RE - combine within and between
+
+        -   RE is a weighted average of the within and between (based on the inverse variance) optimal weighting.
+
+-   Mundlak approach - controlling for group means
+
+    -   pushes weights toward FEx
