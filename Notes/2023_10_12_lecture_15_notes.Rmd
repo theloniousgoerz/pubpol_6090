@@ -1,0 +1,34 @@
+---
+title: "PUBPOL 6090 Lecture 15"
+author: "Thelonious Goerz"
+date: "2023-10-12"
+output: pdf_document
+---
+
+**EITC paper discussion**
+
+-   treatment is high parity of birth record, if you are first, second, third or more born, your exposure to the policy will be different.
+
+-   Comparing across different parities, the trends in low lightweight rates for first borns second, and third plus borns would have moved together had the policy changed.
+
+-   use credit received as IV for EITC received and common metric
+
+-   Robustness
+
+    -   Untreated subgroups
+
+    -   falsification tests
+
+        -   (Page 193) figure looking at treatment effect impact on subgroup earnings
+
+-   Joyce and Dench critique
+
+**Propensity Score Methods**
+
+-   P score overlap
+
+    -   we want to be sensitive to this overlap
+
+    -   do we have like p scores with like p scores
+
+-   inverse propensity score weighting is one approach to implementation

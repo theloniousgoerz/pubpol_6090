@@ -1,0 +1,24 @@
+---
+title: "PUBPOL 6090 Week 7 Lecture 14 prep"
+author: "Thelonious Goerz"
+date: "2023-10-11"
+output: pdf_document
+---
+
+**Additional topics**
+
+**Measurement error and fixed effects**
+
+-   Punchline = if we add covariates and the covariates are correlated with the true signal of the xs, then taking that variation away with controls or fes makes the reliability ratio worse. Less signal in the signal /noise ratio. We loose signal but not noise
+
+    -   Example: family fixed effects, throwing away all variation between families and throwing away potential measurement error signal -- makes attenuation bias worse
+
+**Nikell bias**
+
+-   problem that arises with lags and dynamic panel contexts
+
+    -   we are interested in the coefficient of a lag variable, X at t-1 time before the present time of interest.
+
+    -   having lagged y and i specific dummy variables
+
+    -   

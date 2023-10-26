@@ -1,0 +1,38 @@
+---
+title: "PUBPOL 6090 Lecture 18 prep"
+author: "Thelonious Goerz"
+date: "2023-10-23"
+output: html_document
+---
+
+**Other event study specification choices**
+
+*Lessons from DID*
+
+-   One thing that can be useful can be to graph the raw time series for the data
+
+    -   It is good to show the estimates from the event study, but also include an additional graph of the raw data for the unit types
+
+-   Whether to use never treated units
+
+    -   Some units may e good or bad counterfactuals. We do not need to use all of the data
+
+    -   We could reweight the control units to make the control units to be more like the treated units
+
+        -   this feels a bit like cheating, but I am not sure
+
+    -   In the event study with staggered timing, events that happen earlier in calendar time are going to have a greater weight to the coefficient than events that happen earlier
+
+        -   We may want to choose an event window that has a balance of observations with times
+
+-   We could pool event times and add splines to improve power
+
+    -   Cost: As we pool, we have more power, but less flexibility
+
+    -   Pooling = create combined event time dummies
+
+        -   1-2,3-4 periods after
+
+-   Spline
+
+    -   imposing constraint on coefficients that there is no curvature constraints, we can fit lines so that between event time 1-3 it is a straight line

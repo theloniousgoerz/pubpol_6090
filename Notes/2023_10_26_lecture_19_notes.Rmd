@@ -1,0 +1,144 @@
+---
+title: "PUBPOL 6090 Lecture 19 Notes"
+author: "Thelonious Goerz"
+date: "2023-10-26"
+output: html_document
+---
+
+**Local projections for dynamic treatment effects**
+
+-   Good to understand because we may be at an inflection point in terms of adoption in applied empirical research.
+
+-   Today
+
+    -   Discuss local projections, methods of estimation, and implementation of the method.
+
+    -   How to think about dynamic treatment effects and impulse response function. In the dag on slide 13, we can think through the dag of the different time periods and the different relationships between variables over time.
+
+**Shocks to X**
+
+We are interested in the shock today we are interested in the outcome of either the change over time of x on y or the impulse response of x now on y later, conditional on X not evolving.
+
+The first part of this "if then causal effect thought experiment is" *shock x at time t, observe y at time t + n \| X.*
+
+-   E.g., DID (Unit and time FE with parallel trends recovers causal effect of x) is equivalent to this disturbance of x that we need for the impulse response function.
+
+Intuitively, the local projection projects out the treatment effect $\beta_i \dots \beta_n$ to get the local projection. All we are doing is reestimating the RHS equation n times for different time points of t in the future from the time point where we identified our disturbance.
+
+Shock to $x_t$ rules out a correlation or confounding relationship between $\epsilon_t,\epsilon_{t+h}$ This allows for richer dynamics, e,g,m the direct effect of today on the next days shock or $y_{t+h}$ depends on today's shocks but we do not see x evolve over time.
+
+We also need to make the **assumption** of acyclic relationships, otherwise, things get difficult
+
+**Y Channel Only**
+
+Thought experiment: $\Delta X$ does not evolve over time but Y does change. e.g., $\Delta = 0$ We have our shock today which could impact y in the future through many possible channels. We can imagine that the X shock operates in a cascading fashion through y into the future.
+
+This is related to mediation analysis, X today is part of the process that effects y into the future. How much of the X is a direct effect and future Xs on y, and how much is just operating through Y indirectly. This motivates wanting to identify the effect, net of future mediators via future treatments of X on y. .
+
+-   For Y Channel only
+
+    -   We need a shock to X and a shock to X in the future to get at the Y channel Only effect
+
+    -   There are also ways to recover it
+
+**Recipe**
+
+1.  Shock to X today and shocks to X in the future
+    1.  Need to see X today \~ X tomorrow
+2.  We need to separately estimate X to X impulse response, which allows us to construct this hypothetical response for X
+3.  Then we can get a YCO X today on Y tomorrow. We vet this by subtracting off the the X to X shock from Y
+
+$$
+\Delta_0 =1\\,\Delta_j = \sum_i^n (-1 \Delta_{j-i} \cdot \Phi_{x \to x}^j)
+$$
+
+From this equation, we figure out the X to X over time and then subtract off the entire average of the effect to get the hypothetical YCO
+
+**Example**
+
+Panel fixed effects identification of employment on mortality
+
+**Connecting local projections to empirical micro designs**
+
+-   Current methods are often fine
+
+    -   Local projections similar/same in these cases
+
+    -   Ex cross-section designs, experiment, basic RD
+
+-   Local projections enables extension to broader data settings
+
+    -   and is more robust to some problems
+
+-   We need to think carefully about the counterfactual
+
+    -   Impulse response v. Y-channel only. We need to think about which models are giving us which dynamic countefactuals.
+
+-   Local projections allow us to extend the cross-sectional designs into time series
+
+**Distributed lag models**
+
+-   Run a distributed lag model, for the
+
+    -   highest order terms (Farthest back), serve as controls for prior shocks and are uninterpretable because it is capturing exogenous change at that time as well as upstream effects that we cannot observe.
+
+    -   lowest order terms are Y channel Only treatment effect. Distributed lag models have earlier lags that block the effects that operating through future Xs which leads to YCO effects (not impulse response)
+
+-   This becomes more complicated when we have moving averages. **We need to assume no Y - X or MA dynamics**
+
+-   Local projections for full and YCO allow for good interpretations for al coefficients, where distributed lag models only can interpreted in TCO in the middle
+
+    -   With ARIMA distributed lag model is much les robust in comparison to the local projection
+
+**Event study design**
+
+-   Pulse treatment representation of $x \in (0,0,0,0,0,1,0,0)$
+
+    -   Instead of step function we have switch on X.
+
+-   Event studies are distributed lag models which give us Y channel only effects, but there are cases where the fragility of the distributed lag model may aply (e.g., x to x dynamics). If we believe that there are x to x dynamics then this may break down.
+
+-   Pre-treatment xs can provide check on this. In practice, the YCO beta is identified. If there are multiple treatments then this could become problematic
+
+-   Punchlines
+
+    -   Es allows for falsification
+
+-   Local projections can be brought to bear when there are **continuous treatments *which event studies cannot***
+
+-   if Y X and MA dynamics LP is better
+
+-   if X X dynamics LP recovers impulse response (Which one do you want)
+
+**When should we use Local Projections**
+
+1.  Have continuous x or multiple treatments
+2.  Panel R
+
+**Applications**
+
+Mortality effects of unemployment
+
+-   We want to separate the YCO from direct effect for unemployment ( part of this is due to business cycle effect)
+
+    -   e.g, the purchase of a safe car, may affect mortality in the future because the car continues to be safe
+
+-   We can build out the impulse response and we can build out the different impulse response combinations
+
+**Summary**
+
+-   LP is a feasible approach
+
+-   recovers dynamic treatment effects
+
+-   in practice, more robust than distributed lags
+
+-   LP nudges toward a deeper look at dynamics
+
+-   Limitations 1/T bias
+
+    -   Akin to Nikell bias - bias that depends on the length of the panel (the longer the panel the better
+
+    -   also depends on the true DGP and the control variables and lags that we have
+
+    -   Bias can grow if we are projecting forward

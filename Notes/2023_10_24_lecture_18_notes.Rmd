@@ -1,0 +1,52 @@
+---
+title: "PUBPOl. 6090 Lecture 18 notes"
+author: "Thelonious Goerz"
+date: "2023-10-24"
+output: html_document
+---
+
+***Grab bag of topics on event studies***
+
+Identity of the relationship between event time and calendar time $t = E_i + j$ relationship between calendar time event time and count time. The maximal span of this window is $-m\dots n$ . How do we choose an event window?
+
+-   In a hybrid data structure, with control units and differential timing of treatment, we may have a window $-m\dots 0 \dots j$
+
+    -   If we have data from 2000-2020, with event times at 2005, 2010, etc. we can see back 5 years and 10 years respectively, If we include a $\hat \gamma_{-10}$ the estimates for this time period will only be based on this 2010 coefficient. 100% of the treated units will be clustered in the middle of the time period, therefore certain coefficients may be estimated on only one treatment case or set of treatment cases at the same time. This is potentially problematic because it weights different values for different event times. This may lead to bias and it may result in unanticipated estimates. The punchline is that we don't really know how these are being weighted.
+
+        -   Tip: Include, show the density of observations with respect to event time. We could choose to have the event times where all observations are contributing to the coefficients or we could do the times where the majority are represented.
+
+    -   We could also pool the end cap (-4,5,6) are pooled together for example. This is usually more defensible in the pre-period.
+
+    -   F test idea, estimate different sets of coefficients for early adopters and late adopters separately then use an F test to compare the two models. If they look radically different then that may indicate bias.
+
+    -   Could also look at $\sum_j E_i \cdot \gamma_j \ D_j$ estimate a linear model of the relationship between the estimated coefficient and the real event time.
+
+    -   In some instances, we could also include calendar time dummies to control for potential calendar time differences
+
+**Trends**
+
+-   How to look for and control for trends? How does this interact with the data structure that you have?
+
+    -   If we have a timing based data structure then we cannot estimate trends
+
+    -   In the DID hybrid structure, and there is a pre trend, what do we do?
+
+        -   Give up
+
+        -   add in direct trend controls - time interacted with unit type dummies.This creates multicolinearity so we need to add an extra restriction. We also lose the ability to look for pre trends and do a diagnostc test before treatment.
+
+        -   Trending treatment effect $\neq$ to unit-specific trends. Table A.11 in Miller 2023
+
+        -   If we are including controls for trend in the pre-period, we **do not** want to have an end cap (pooling) in the post-period because it could identify the unit-specific trends rather than the trending treatment effect. Generally, we cannot include parameter restrictions in the post period.
+
+**Other**
+
+-   Partialing out unit specific time trends to solve computational burden (FWL). Matrix will be big and inverting the matrix will be slow. Partialing out pre-treatment rather than the entire time (see video)
+
+-   Event study assumes that the effects are additively seperable, if a worker is displaced, and then displaced again, Then we may have cause to believe that the effects are not additively seperable.
+
+------------------------------------------------------------------------
+
+-   Doug: "I'm only going to belabor this point a little bit more because I can already tell were in a place of general confusion"
+
+-   

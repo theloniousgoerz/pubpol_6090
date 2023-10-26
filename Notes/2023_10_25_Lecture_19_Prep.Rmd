@@ -1,0 +1,138 @@
+---
+title: "PUBPOL 6090 Lecture 19"
+author: "Thelonious Goerz"
+date: "2023-10-25"
+output: html_document
+---
+
+**Estimating dynamic treatment effects with local projections**
+
+-   Local projections developed in time series models for estimating dynamic treatment effects in microeconomics
+
+    -   They are motivated by a similar goal as event studies
+
+-   We think about having an x and y
+
+    -   Given a shock to x how does the path of y change at time t + n (impulse response function)
+
+    -   Estimated with panel vector autoregression (VAR)
+
+-   Usually not used in micro
+
+    -   difficult/math difficulty
+
+    -   non-transparent design
+
+    -   questionable identification assumptions. Rhetorical design is not clear
+
+-   Jorda AER 2005
+
+    -   Estimating the contemperaneous causal effect
+
+$$
+y_{i,t} = \beta \cdot x_{i,t} + Controls +. v_{i,t}
+$$
+
+-   Beta is our contemporaneous causal effect
+
+    -   Examples of sufficient controls
+
+        -   Random assignment
+
+        -   RD
+
+        -   Panel FE
+
+        -   TIme Series
+
+        -   IV
+
+        -   P-score weighting
+
+    -   Many different types of ID strategies to get contemporenous beta
+
+-   Once we have that model
+
+    -   we can run other models to get impulse responses
+
+$$
+y_{i,t +h} = \beta \cdot x_{i,t} + Controls +. v_{i,t}^h
+$$
+
+-   The $\beta_h$ estimates are direct measures of the impulse response. H periods in the future. This is a series of regressions with different betas , each of these has an identical RHS with varying hs
+
+    -   estimate regressions with Y varying with increasing h and RHS the same to collect beta coefficients
+
+-   Stevens et al
+
+    -   add in lagged variables as conrols for x and y
+
+-   time series considerations/tradeoffs compared to VAR
+
+-   More robust to mild model misspecification
+
+-   easier and intuitive imlementation
+
+    -   easy statistical inference
+
+-   Easier to explore model variations
+
+-   Efficiency/robustness tradeoff
+
+    -   more robust than VAR but not efficient as VAR when correctly specified. In the limit LP and VAR identify the same thing
+
+-   Things to consider
+
+    -   Longer time series needed
+
+    -   $F \cdot y$ uses up observations
+
+    -   Start from stationary processes (no unit roots and transofmr data
+
+-   Control variables "strictly exogenous"
+
+    -   We need to think that we have a shock to x or exogeneous variation in x. LP does not provide any info on identification or exogeneous variation , just looking at dynamics
+
+-   Counterfactual can be subtle
+
+    -   impulse response function
+
+$$
+\Phi_{x\to y}^h = E[y_{t+h} (d^1_t) - y_{t+h}(d^0_t)W_t]
+$$
+
+-   Ds are alternative values $x_t$ (the shock)
+
+-   W is the conditioning set (what we know at time t h)
+
+-   Impulse response gives the total change to the expected path of y plus h
+
+    -   Holding other shocks constant, we want to know what is happening to the phis in the future as a result of this purturbence
+
+    -   We estimate not one but multiple impulse response functions
+
+-   We need to assume away contemperaneous reverse causality ( we can have impulse responses for x on y y on x y now y later and x now and x later)
+
+    -   triangular representation or "wold causal ordering"
+
+-   This is not a problematic assumption asusming that we believe our causal design e.g., we are isolating the effect of x on y
+
+    -   Delayed reverse causality -- y today may affect x tomorrow is ok
+
+    -   we also assume away anticipation effects (this is a non-trivial assumption)
+
+-   Alternative (Y channel only) effect which is a shock to x on future y (but not through changes to future x
+
+    -   changes to y that operate through the initial x. Intuitively the change in a one time x
+
+        -   We condition on the future x values being what they would have been given that there is no shock
+
+-   School bond example
+
+    -   the idea is that we do not want to examine the impact of an evolving x (e.g., if we pass a bond today the voters would be unlikely to pass future bonds right after
+
+    -   If we do not pass the bond then there may be a different likelihood of passing a bond
+
+-   Holding the future economy constant, how does that effect mortality later on
+
+-   n

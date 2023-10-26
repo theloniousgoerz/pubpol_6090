@@ -1,0 +1,152 @@
+---
+title: "PubPOL 6090 Lecture 17"
+author: "Thelonious Goerz"
+date: "2023-10-18"
+output: pdf_document
+---
+
+**Event study models**
+
+-   Extension of difference in differences and panel fixed effects
+
+    -   They have a nice graphical representation which is nice.
+
+-   In these models we think about time since event, rather than literal calendar time
+
+    -   JLS 1993, job displacement
+
+-   Pros
+
+    -   Estimates do not have just one estimate but a dynamic set of multiple estimates
+
+    -   We can look at what we happen before treatment. We get a placebo test/zero trend which is good for robustness check
+
+        -   What can we do about it? Well we can look at it in the context of the estimated treatment effect, how much of a difference is it.
+
+-   Estimating equation
+
+$$
+y_{it}= (\sum_{j \in -m \dots ,0,\dots n} \gamma_j \cdot D_{i,t-j}) + \\  \alpha_i + \delta_t + \\ \beta \cdot X_{it} + \epsilon_{it}
+$$
+
+-   Line one is the event study terms,
+
+    -   calender time t
+
+    -   event time j
+
+    -   event date $E_j$
+
+    -   D - 0/1 "event happens now"
+
+        -   Dummy indexes whether the event happened $j$ periods ago. We create these up to n possible periods **after the event** and m possible periods **before the event.** This is the event time window. When J is negative, it is asking "will i experience this event j periods in the future."
+
+    -   $\hat{\gamma}$ is the quantity of interest that is plotted on the graph. **This is the punchline quantity that we are estimating**
+
+-   Line two are the panel fixed effects
+
+    -   We have i-level fixed effects and calendar time fixed effects
+
+    -   These need to absorb any confounding and or problematic variation at the individual and time dimensions
+
+-   Line three adds control variables for $i \times t$
+
+**Event studies are a generalization of differences in differences**
+
+Recall:
+
+$$
+y_{it} = \gamma \times Treated_i \times Post_{i,t} \\ \alpha_i + \delta_t + \\ \beta \cdot X_{it} + \epsilon_{it} 
+$$
+
+-   here we can see that we have the same panel fixed effects and control variables as the event study, but we have a treated times post term instead of the event study terms
+
+    -   the connection can be seen by saying take the DID and whenever j is positive, force all the coefficients to be the same. If d is n periods after the event, that all gets subsumed into the post term which indexes whether the time is after the event or not. This collapses to being a treated unit after the event with coefficient $\gamma$
+
+    -   IF we set all the pre periods $j <0$ to be a 0 if before, then it just collapses to the panel fixed effects setup we had with DID.
+
+**Data structures for event studies**
+
+-   Group i units into unit types
+
+    -   Based on E_i
+
+    -   Including neve treated (if any) $E_i = \infty$
+
+    -   t = e_i -. D = 1
+
+-   We need to group the treated and potentially control units into a common unit type, e.g, does the unit get treated.
+
+    -   Types
+
+    -   Common event date and only ever treated = NA
+
+        -   This is just an interrupted time series model, no way to judge effect of the event or the event of time.
+
+    -   Common event date and there are never treated = DID-type
+
+        -   Parallel trends like assumption, where we use the never treated units to identify a counterfactual causal estimate.
+
+    -   Varying event and only ever treated = timing based
+
+        -   All units get treated but the dates vary. This relies on the assumption that the event date is random. Those who adopt earlier and later are good counterfactuals for each other.
+
+    -   Varying event date and there are never treated = hybrid
+
+        -   Combination of timing based and DID with control units
+
+-   Parameter restrictions will depend on the data structure that we are working with. Additionally, we need to decide whether we add trends or not.
+
+**Multicolinearities**
+
+-   We need to impose parameter restrictions to estimate our effect. We have more parameters than data :(
+
+-   We need to define the counterfactual
+
+-   Mapy pitfalls and it depends on our data structure
+
+-   DID structure
+
+    -   2-unit types treated and untreated
+
+        -   $2\cdot T$ limiting observations
+
+        -   2 by T + 2 parameters to estimate
+
+        -   2 Unit type coefficients, but we do not need to think about unit dummies
+
+-   Three types of parameter restrictions (dropping a dummy variable = to setting the parameter beta = 0). We could also remove the constant or intercept. There is multicolinearity between unit type and calendar type dummies
+
+    -   standard panel-FE restrictions
+
+        -   Need to remove one dummy
+
+    -   restrictions to define counterfactual
+
+        -   Whar are we comparing to, the treatment effect J periods after treatment compared to the counterfactal defined by the parameter restriction. The most common method is making the reference period $t -1$. (-2,0,1,2,..). This sets our counterfactual for the gamas to be in comparison to the state one period before the events.
+
+        -   Or, we could also choose a reference "period" before we get treatment. The average outcome within a reference period, then normalize the counterfactual average the $\gamma_p = 0$.
+
+    -   restrictions to restore rank identification
+
+**Define the counterfactual**
+
+-   Intuition for thinking about using a reference period rather than just a single time point
+
+    -   One thing that we want to consider is the possibility of noise driving the estimate via the definition of the counterfactual. In general, a reference period may be less noisy. We want to be close enough to be stable but not add extra noise
+
+        -   This has the property of making the gamma coefficient shift up or down
+
+        -   The se of gamma will shrink
+
+        -   This matches from our difference in difference intuition.
+
+        -   We can still look for pre-trends when we have the reference period. We want to look for a "trend" rather than looking at whether the estimate is just different from 0.
+
+**Parameter restrictions for the timing based structure**
+
+-   Gamma estimates can be sensitive to parameter restrictions
+
+Questions
+
+I am a bit confused how we think about deciding when event time happens for control units in a hybrid DID setting. Do we choose a random time period since we believe that they are evolving as they would in absence of treatment?

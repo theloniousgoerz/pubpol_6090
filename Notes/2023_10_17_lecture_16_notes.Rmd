@@ -1,0 +1,147 @@
+---
+title: "PUBPOL 6090 Lecture 16"
+author: "Thelonious Goerz"
+date: "2023-10-17"
+output: pdf_document
+---
+
+**Logistics**
+
+-   Next problem set this week
+
+    -   Replicate Deheja and Wahaba core results
+
+-   Structured research project for the course
+
+-   Old exam for the course to get an idea of what is on the exam and what questions are going to be asked
+
+**This week**
+
+-   Event study models and local projections
+
+    -   Thinking about dynamic treatment effects
+
+    -   
+
+**Notes**
+
+*All about propensity scores*
+
+-   Punchline of Dehejia and Wahaba
+
+    -   Propensity scores worked, they solved the Lalonde proble,
+
+-   Why aren't propensity scores used in current work
+
+    -   Strong assumption of conditioning on covariates
+
+-   CIA assumption is very problematic
+
+$$
+y_i1 y_i0 \perp Y | X \\ \sim
+y_i1 y_i0 \perp Y | R
+$$
+
+-   Selection into identification
+
+    -   Family fixed effects strategy
+
+        -   Families that are larger are more likely to be switchers, which is not representative of the population
+
+            -   Can use p-score to reweight families that are large
+
+-   Does this same extrapolation work in the IV LATE setting?
+
+    -   Differential treatment effects, FFE estimator is implicitly weighting treatment effects differently
+
+-   Angrist and Duval
+
+    -   ExtrapoLATEing
+
+    -   IV =\> target population
+
+-   Implementation
+
+    -   <div>
+
+        1.  Estimate the propensity score via logit
+            1.  logit t = f(x)
+        2.  get pscore
+            1.  Can we assess the predictive power of the propensity score? How well does it fit?
+            2.  Assess with k-fold cross validation
+            3.  plot out dist of T C pscore
+            4.  Could estimate local regression of pscore on treatment
+            5.  AUC and ROC curve (Receiver operator characteristics curve)
+        3.  use pscore to get the TE
+            1.  match or re-weight
+
+        </div>
+
+-   Rosenbaum and rubin
+
+    -   Assuming we have the correct pscore
+
+$$
+E(X|T=1,P) = E(X|T=0,P)
+$$
+
+Xs are the same conditioning on P and the treatment
+
+-   Plot histogram of treatment and control unit p scores
+
+    -   Look at how the distributions change, this can be a good way to see how people in the treatment and control group vary
+
+    -   We can look at similarity and skewness
+
+    -   When we discard observations with really low propensity scores, we lose power but avoid extrapolating to units that do not exist
+
+-   Heckman and Hotz
+
+    -   more pre-treatment data and can introduce more specification tests
+
+**Problem set**
+
+-   Table 3 replication
+
+    -   Replicate the punchline results and the histograms of the propensity scores
+
+        -   They emphasize stratifying and matching
+
+    -   Step 3 is different
+
+    -   creating strata or creating matches
+
+-   Within the stratification
+
+    -   How to choose the strata?
+
+    -   0-1 of p
+
+    -   creating bins of the strata and then subtract the y bar for the strata and get a treatment effect for each strata?
+
+    -   Then calculate the treatment effects across strata then average it
+
+$$
+\sum_s \omega (\bar y_1 - \bar y_0) = \hat \tau
+ $$
+
+$\omega$ is a weight for each strata, then we wqnt to create a weight for each strata based on the fraction of the treated population in that strata
+
+-   to calculate SEs for stratification
+
+    -   each of the estimates are statistcally independent accross bins
+
+        -   calculate the variance of the weighted TE
+
+$$
+V = \sum_s \omega_s \theta_s \\
+\sum_s \omega_s^2 \ Var(\theta)
+$$
+
+-   How do we define the strata? Researcher decision
+
+    -   dGenerally create a candidate set of strata, check them and then check and compare
+
+        -   Use the balance of the xs to define whether the strata are good
+
+        -   

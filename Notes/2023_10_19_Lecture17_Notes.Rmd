@@ -1,0 +1,136 @@
+---
+title: "PUBPOL 6090 Lecture 17"
+author: "Thelonious Goerz"
+date: "2023-10-19"
+output: pdf_document
+---
+
+**Notes on event studies**
+
+Core three ideas
+
+-   Event study estimating equation
+
+-   Data structures and groups
+
+-   Dealing with parameter restrictions
+
+**Estimating equation**
+
+$\alpha_i$ -\> Treated
+
+$\delta_t$ -\> post
+
+-   unit type,
+
+    -   Is it that everyone gets treated at once then there is one treatment, if there are multiple times that treatment happens, then dummies index the event date.
+
+-   Unit-type by time period,
+
+    -   if you are a control unit, then your event time is 0
+
+-   In some cases we are comparing switchers to not yet treated observations
+
+    -   but this depends on what unit types that we have. Is it that we have only eventually treated units or do we have some never treated units too.
+
+-   $D_{i,t-j}$ are the event time dummies, how do we think about the control units and what their event time.
+
+    -   Event date,
+
+    -   t = calendar time,
+
+    -   j is the event time
+
+-   What is the j for the control units?
+
+    -   One way to think the event time for control units is that the E_i for controls is infinity. Then event time is - infinity. They do not have an event time or a missing event time. SO, the $D_{i,t-j}$ for control units is 0
+
+-   Once we have the event times for the units, we should have a histogram of the event date for the treatment and controls (Online appendix).
+
+-   Why include control units if we have no variation in the contol units and we are only using the variation in the treated i units?
+
+    -   We can use it to provide over-time change counterfactual and control for bad variation. They inform the $\delta_i$ which provides the counterfactual.
+
+-   One thing that we can do if we are worried about pre-trends, then we can include trends in the event study to account for these issues.
+
+-   How do we deal with announcement effects in event studies?
+
+    -   We may not have only the event $E_i$ but we may have multiple effects. Think about it as two types of events, announcement and policy change.
+
+    -   We could have two different terms in the model for the event types,
+
+    -   **BUT,** we need to have variation in the time between announcement and event date to identify the effects separately.
+
+**Parameter restrictions**
+
+-   Two problems
+
+    -   We have more parameters than we have the ability to identify, FEs and gammas
+
+        -   For FEs we need to drop one of our dummies for multidisciplinary
+
+        -   one restriction is put on the gammas to identify the treatment effect, we usually **do one period before the treatment = 0, usually done by dropping the dummy before treatment.**
+
+        -   The choice of dummy to drop carries an explicit definition of the counterfactual. This means that we are comparing what is going on one period before the event, this changes the counterfactual which gives *different interpretations*
+
+            -   Common practice is to drop -1 (e.g, -3,-2,0,1,2,3)
+
+            -   Dropping -1 is the same as only using one period in before in DID
+
+            -   We should change the reference period to best reflect the time window that we have
+
+                -   if we suspect an ashenfelter dip, then we want to not average over that.
+
+            -   We could also drop our end cap of our time period -m as the reference period
+
+            -   We can also average over a time period as the reference group rather than the single time period
+
+                -   can lead to smaller confidence intervals
+
+                -   Noise of an average time period can be less than a single period
+
+**Confidence intervals**
+
+-   Limiting observations 2 x t + 2
+
+    -   Too many parameters, restore identification by dropping one vent time dummy and one unit dummy.
+
+-   We can still get standard errors because we have variation within a period
+
+**Can we compare point estimates from DID to event studies?**
+
+-   Estimate both and plot coefficients over even study time
+
+-   In the linear model, if we impose the correct restrictions we improve statistical power, get smaller CI and SE
+
+-   We can look at some subgroups to examine the pretrend
+
+-   **One thing we can do for interpretation, we could estimate the event study and then average the treatment effects for all post periods -- take the average of these coefficients.**
+
+**Dynamic treatment effects**
+
+-   Event sudies assume that effects can vary by time but cannot vary by unit
+
+    -   E.g., the treatment effect varies by where the unit is from time to event
+
+    -   Weighting of is, can be weird and counterintuitive
+
+    -   G.3 Appendix, negative weighting
+
+-   Negative weights could arise from bad restrictions and assumptions
+
+**Timing based ES with no control group**
+
+-   The best case scenario is that we have only lost one parameter we can drop
+
+-   In just timing based, we have to normalize pre-trend to zero which now no longer is a good diagnostic check,,
+
+    -   Fundamentally, timing based is a weaker research design because we don't have the falsification test.
+
+-   If we want to think of time trends
+
+    -   unit trends
+
+    -   unit type specific trends then we need to hae more parameter restrictions
+
+-   

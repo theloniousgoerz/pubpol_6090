@@ -1,0 +1,147 @@
+---
+title: "PUBPOL 6090 Lecture 15 Prep"
+author: "Thelonious Goerz"
+date: "2023-10-11"
+output: pdf_document
+---
+
+**Propensity score methods and matching**
+
+Setup, binary treatment effect $T$ and an outcome $Y$ . This approach relies on selection on observable covariates and is embedded in the Conditional Independence Assumption.
+
+$$
+CIA =(Y_i1,Y_i0) \perp \!\!\! \perp T_i | X_i
+$$
+
+Read as, holding X's constant, the potential outcomes are independent of treatment assignment. This is a **very** strong assumption:
+
+The treatment effect is then
+
+$$
+E(\Delta|X) \sim ATT \ or ATE
+$$
+
+Strong and un-testable assumption. How do we implement this method
+
+1.  Regression approach
+2.  Direct matching
+3.  Propensity scores
+
+Suppose
+
+$$
+Y = \beta T + \gamma + \epsilon
+$$
+
+The assumption of CIA here is that
+
+$$
+\epsilon \perp \!\!\! \perp T
+$$
+
+This also assumes
+
+1.  Strong functional form assumptions, it builds in a constant beta which means that all $i$ have the same treatment effect and are additively separable.
+2.  It uses that to allow for us to extrapolate to units that do not have the same values of X and we are comparing them (this is problematic)
+
+How can we use CIA but without OLS assumptions
+
+We can use matching
+
+1.  we could exactly match on a covariate family size and then average up the treatment effects to get an appropriate weight for the population that we are trying to estimate for
+
+    1.  if we did this in regression we would get a weighted average of the family size specific treatment effect, but the weights are different than the population weights. The regression weights involve both the population share weights as well as the conditional variance $var(T|F = f)$ of the treatment within group size - so the literal group size in the sample is added in here. If there are no difference in sample sizes, then the MSE is most efficient in OLS.
+
+Matching on continuous treatment
+
+-   bin continuous variable into ranges
+
+-   do nonparametric regression
+
+-   Use newrest neighbors match
+
+Multidimensional x
+
+-   Create new variables more dummies for different permutations
+
+-   Nearest neighbor match (near is some distance between the observations)
+
+    -   Results in inexact matches
+
+    -   We could do bias-corrected matching which uses regression to adjust and control for inexact matches.
+
+**Estimation**
+
+Propensity score matching
+
+-   We want to model the probability of getting treatment given some x covariates
+
+-   $p_x = Pr(T=1|X=x)$
+
+-   Rosenbaum and Rubin: propensity score theorem
+
+    $$
+    IF (Y_i1,Y_i0) \perp \!\!\! \perp T|X_i, (CIA)
+    $$
+
+If the conditional independence assumptions holds, treatment is as good as random, then
+
+$$
+(Y_i1,Y_i0) \perp \!\!\! \perp T| P_x
+$$
+
+We can just condition on the propensity score to absorb many dimensional Xs
+
+-   Assumption 1: This relies on conditioning on observables
+
+    -   If we don't have the right observables then this wont work
+
+-   Pros: easy to implement
+
+-   Cons: strong assumptions
+
+**Practical implementations**
+
+-   Logit or probit $T = X$
+
+    -   We also need to specify the correct functional form and have the exact right covariates
+
+    -   One way to think about this is that it is a prediction problem which is to say that we can use machine learning and data driven methods to select the propensity score.
+
+-   How do we assess whether the model is good?
+
+    -   Check if conditioning on the propensity score, treatment is uncorrelated with the Xs (Rosenbaum and Rubin)
+
+    -   This implies that the propensity score is good
+
+        -   Get $\hat p_x$ then create bins and strata and then compare ybar 1,0 for each bin and get the delta
+
+        -   Then take the average of the deltas for each bin and then that is the estimate.
+
+-   Propensity scores enable us to check if we are comparing like groups with like groups.
+
+    -   If we plot the densities of the propensity scores by treatment we can see where different observations lack common support.
+
+        -   If we do not have comparable people then this is problematic.
+
+        -   We want to be able to show that we have treatment and control overlap
+
+        -   If this fails then we have to rely on stronger extrapolation assumptions that come with regression.
+
+**Propensity scores and reweighting**
+
+-   Idea: reweight data based on the propensity score to make the treatment and control groups more similar
+
+-   We use weights to make sure that the sample is representative, in an oversample or complex design, then we need to correct for higher or lower probabilities of sampling each group
+
+-   we could create probability weights which is equal to $1/ pr(sample)$
+
+-   if we want to make the T=1 representative of all we can create weights for the treatment that are $1 / pr(t=1|x)$. We want to make the T=1 group representative of the whole population $1/propensity \ score$
+
+    -   For controls, they are 1/ propensity to be untreated.
+
+-   We need to be careful of weights when the pscore is really small cause it can give big weights to some obs, asymptotically this averages out.
+
+    -   We can use a trimming rule to trim extreme weights
+
+    -   
