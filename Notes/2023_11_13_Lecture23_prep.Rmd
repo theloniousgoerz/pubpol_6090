@@ -1,0 +1,85 @@
+---
+title: "Untitled"
+author: "Thelonious Goerz"
+date: "2023-11-13"
+output: pdf_document
+---
+
+**Regression discontinuity designs**
+
+*Basics*
+
+Key info
+
+1.  Outcome
+2.  Treatment
+3.  Z running variable that is used to assign treatment
+    1.  $z_0$ which is the threshhold
+
+Basic assumptions are limited
+
+1.  no discontinuous jump in the counterfactual as it crosses the threshhold
+
+Estimate $E(Y|Z)$
+
+Regression $Y = \beta_1 + \beta (z_-z_0) + \beta_2 \cdot z > z_0 + \beta_3 (z-z_0) + \epsilon$
+
+-   Which data to use? Can use a subset close around the treatment cutoff because the slope of the line may change as you get farther away from it
+
+*RD Continued*
+
+Two leading ways that the assumption of continuity abasent of treatment can break down
+
+1.  Maybe there are multiple treatments
+    1.  academic probation for GPA also lose scholarship -- which maybe difficult to identify - we need to think of this as a bundle of treatments
+2.  If the people choose their Z or know that they can manipulate their z which leads them to get treatment (strategic manippulators)
+
+We can check for manipulatios in the running variable (people close to treatment) may be able to get over the threshhold. We can look for whether the density of the running variable is discontinuous
+
+Nonparametric
+
+-   We can use objects that are closer to the threshhold, to estimate the kernel density and weight the observations accordingly
+
+-   The standard practice is to use nonparametric regression
+
+    -   partition the data
+
+    -   run local linear regression on each side
+
+        -   with the weights
+
+        -   Run each regression and plot predicted values on each size
+
+            -   Difference in the predicted values of the treatment at a specific point in the running variable is the RD estimate
+
+Robust RD
+
+-   has confidence interval
+
+------------------------------------------------------------------------
+
+When we get closer to the RD cutoff, we can be less worried about how good our regression is
+
+We want to get close to the cutoff in a reasonable way.
+
+*Covariates*
+
+We can check balance like in an experiment, we can use this as a placebo to see whether they are balanced. We can also use covariates for precision to make the estimates less noisy
+
+*Incomplete compliance*
+
+-   We can think of people who do not completely comply with the treatment, we do a fuzzy regression discontinuity
+
+    -   Treatment status changes the probability of being treatment, this is analagous to an instrumental variable. We can estimate the ITT from the reduced form estimate,
+
+    -   then we can implement the IV take to estimate the complier effect
+
+-   Nonparametric implementation of RD using an instrumental variables approach.
+
+*Limitations*
+
+-   maybe there is no discontinuity
+
+-   Sparse data around the cutoff which can lead to noisy estimates in the data
+
+-   The treatment effect is local for people who'se running variable is $z_0$ not for anyone extrapoalted out

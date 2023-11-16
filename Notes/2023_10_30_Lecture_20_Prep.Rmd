@@ -1,0 +1,217 @@
+---
+title: "PUBPOL 6090 Lecture 20 prep"
+author: "Thelonious Goerz"
+date: "2023-10-30"
+output: pdf_document
+---
+
+**Instrumental Variables**
+
+*Agenda*
+
+We will spend four classes on IV
+
+1.  basics
+2.  weak IV
+    1.  specifically low statistical power
+    2.  Angrist and Krueger
+3.  LATE
+4.  Extensions
+
+**Basics of IV**
+
+Imagine
+
+$$
+Y_i = \beta T_i + \Gamma X_i + \epsilon_i
+$$
+
+We are interested in the causal effect, quantity $\beta T_i$, but we are worried that there is a
+
+$$
+cor(T_i, \epsilon_i) \neq 0
+$$
+
+The basic premise of instrumental variables is that if we can have a new variable $Z_i$ which will predict/influence $T_i$ but **it does not impact** $\epsilon_i$
+
+$$
+T_i \to Y_i \\
+M \to Y \\
+M \to T
+$$
+
+Uh oh!
+
+$$
+Z_i -\to T_i \to Y_i \\
+Z_i \neq Y_i
+$$
+
+Yay! Basically we want there to be no direct effect of Z on Y **unless it is through** T
+
+*Application*
+
+Suppose
+
+$$
+Z \in [0,1]
+$$
+
+And we know that people who are 1 have *higher levels of T* then we make the assumption that any differences between 0,1, are just driven by the treatment, so we can identify the effect. We can calculate the slope between these two points, we get a $\hat \beta$ of the treatment effect. When we have a binary instrument for a continuous treatment, this is called the **Wald estimator.**
+
+Formally, the wald estimator gets us:
+
+$$
+\hat \beta_{wald} = \frac{\bar Y_{z=1} - \bar Y_{z=0}}{\bar T_{z=1} - \bar T_{z=0}}
+$$
+
+**General Linear Econometric Estimator of IV**
+
+**IV Assumptions**
+
+**Assumption 1:** $Z$ is uncorrelated with $\epsilon$ , exclusion restriction
+
+**Assumption 2:** Good first stage power $Cor(Z,T) \neq 0$
+
+**Assumption 3:** Relevancy assumption of the instrument
+
+**Assumption/Key idea 4:** Overidentification tests
+
+------------------------------------------------------------------------
+
+**Two-stage Least Squares**
+
+We want to estimate the ***structural equation***
+
+$$
+Y= \beta X + \gamma T + \epsilon
+$$
+
+We are interested in the endogenous regressor $\lambda T$ . There is a correlation between the $\gamma T$ and $\epsilon$ which means that running OLS leads to a bias coefficient.
+
+Now we have a model for how the treatment variable is determined, which is the ***first stage equation***
+
+$$
+T = \delta X + \phi z + \mu
+$$
+
+The key variable is the $\phi z$
+
+**Key assumption:** $Z$ is uncorrelated with $\epsilon$
+
+*2SLS*
+
+1.  Estimate the 1st stage equation and get $\hat \delta,\hat \phi$ which we can use to construct a $\hat T$
+    1.  We have to assume that $Cor(\hat T, T) \neq 0$ because we actually have to predict the treatment, can also be $Cor(\hat T, T|X) \neq 0$
+    2.  So we get, $Cor(\hat T, \epsilon) =0$
+2.  Estimate the second stage regression of $Y = \hat T + \epsilon$
+    1.  Which should give us $plim \ E(\hat T_{ols}) = T$ which gives us a consistent estimate, in the limit, of treatment.
+
+*Issues*
+
+What if we do not have a Z variable? We cannot do IV and must find another method.
+
+We also can't use a Z that is predictive of Y by itself, then it is problematic because it is in the error term of the structural equation. This implies that we have to have a strong belief that the variable does not belong in the structural equation, which is the exclusion restriction.
+
+We can also think about the variation in the first stage regression
+
+1.  Variation from covariates
+2.  Good variation that is in our instrument
+3.  Bad variation that is from the error term $\mu$
+
+A result of this is that, by discarding the bad variation in our treatment variable and isolating the exogeneous variation, we are loosing variation overall which will affect statistical power. **In general, this will result in less precision, and the standard errors for IV compared to OLS will increase.** Additionally, estimating the IV regressor also includes noise in the regressor which has implications for our SEs, we can use a formula to correct for these SEs.
+
+**Justifying instrumental variables**
+
+We need to think very carefully about the instrument to make sure that there is not a common prediction between Z and the model error.
+
+We can test the statistical power for an IV predicting treatment. We cannot test the exclusion restriction, this plays a similar role to the CIA and selection on observables.
+
+In practice, we could have multiple endogeneous regressors and instruments in the equation.
+
+If we have K endogeneous regressors and K instruments, we have a *just-identified IV model*,
+
+if we have K-1 instruments we have an *underidentified IV model which means that we cannot come up with a point estimate,*
+
+if we have more instruments than regressors, we have an *overidentified model*
+
+**Reduced form, GMM, and Overidentification**
+
+Ingredients for IV:
+
+1.  Structural equation
+2.  Instrument on X
+3.  Reduced form
+    1.  Combination of the structural equation and structural equation for T
+
+When we have this equation, we can test and see if Z is correlated with Y. If that is the case, then we know that the treatment matters, but if the coefficient is 0 then that is problematic.
+
+If we have the right IV setup and we estimate using the wald estimator *with no control variables* then we will get the causal effect.
+
+*Overidentification tests*
+
+A setting where we have more Zs than T
+
+$$
+Z_1 \to T \\
+Z_2 \to T
+$$
+
+Standard 2sls approach is to use both Zs to predict T -- use all information. It would also be possible to estimate two separate IVs and if they diverge it may be due to sampling noise or it may be due to the fact that something is going wrong. This would suggest to us that these may not be valid instruments. When we are just-identified, we cannot conduct ovderidentification tests. One of the challenges, is that this is a partial check on the exclusion restriction but not a full test (e.g., if we have two poor instruments that get the same result we do not know what to think.)
+
+How do we interpret a passing overidentification test? Conditional on enough of the instruments being valid to get consistent estimates, the remaining instruments provide no evidence that they are invalid.
+
+**IV in matrix algebra**
+
+$$
+Y = X \beta+ \epsilon
+$$
+
+$X\beta$ includes *all variables* (endogeneous or otherwise)
+
+We have our instrument set
+
+$$
+Z \in [controls, IV) \\X \in [controls, endogeneous \ regressors]
+$$
+
+We can pre-multiply these matrices
+
+$$
+Z'Y = 'X\beta + Z'\epsilon
+$$
+
+Because the Z' is orthogonal to $\epsilon$ this will be projected to be 0. The variance of this term will be $\sigma^2 Z'Z$ which is a bit heteroskedastic, so we want to premultiply by the inverse of of z'
+
+$$
+(Z'Z)^{-1}Y = (Z'Z)^{-1} Z'X\beta + (Z'Z)^{-1}Z'\epsilon 
+$$
+
+We can square out this matrix by multiplying by X'Z, which will result in a square matrix that we can take the inverse of.
+
+$$
+(X'Z) (Z'Z)^{-1}Y = (X'Z) (Z'Z)^{-1} Z'X\beta + (X'Z) (Z'Z)^{-1}Z'\epsilon \\
+$$
+
+The matrix below is the projection matrix for Z, which is to say if you multiply the 2nd and 3rd terms by anything it will give you the coefficient of the regression on Z. This results in a hat-making matrix
+
+$$
+Z (Z'Z)^{-1} Z' = P_z
+$$
+
+We can rewrite, and pre-multiply by the inverse
+
+$$
+(X'P_zY) = (X' P_z X) \beta + (X' P_z X) \epsilon \\
+(X'P_zX)^{-1} (X'P_zX) = (X'P_zX)^{-1}(X' P_z X) \beta + (X'P_zX)^{-1}(X' P_z X) \epsilon
+$$
+
+The first term is the $\hat \beta_{IV}$ which is the quantity of interest. Mathematically, this allows us to learn about *what the IV estimator actually is. Intuitively, it is the beta on the "true coefficient" in addition to the third term which is the numerator of the model errors and project them on to the instruments. **If the exclusion restriction holds, the third term goes to 0 because the model errors are uncorrelated with the instruments, which allows them to go to 0.***
+
+We also need the $P_z$ be predictive of the Xs so that the matrix is invertable and we can divide by it.
+
+$$
+\hat\beta_{IV} = \beta_{truth} + (X'P_zX)^{-1} (X'P_z \epsilon)
+$$
+
+When computing the variance matrix, the second term is going to be the outer part of the sandwich matrix.

@@ -1,0 +1,52 @@
+---
+title: "PUBPOL 6090 Lecture 23 Notes"
+author: "Thelonious Goerz"
+date: "2023-11-14"
+output: html_document
+---
+
+**Regression Discontinuity**
+
+-   PUBPOL 6091 (Zhuan Pei Amanda Eggen)
+
+    -   More on RD
+
+Conceptually, we can get a counterfactual based on how the untreated outcomes would trend forward. Assumption is that the control units are not jumping discontinuously at the treatment.
+
+*Common threats*
+
+1.  This can be a problem because the threshold may also be a threshold for other treatments. (many treatments) need to be a bundle
+2.  Along the running variable, there are different treatment effects for different values of $z$. In RD, what we can do is identify the treatment effect **at the threshold.**
+3.  In the absic RD assumes away spillovers (EMBEDS SUTVA)
+    1.  We are estimating the direct effect net of spillovers (net of global treatment)
+    2.  Control variables will not help with spilovers (improved precision)
+4.  Nonparametric rd
+    1.  estimates are sensitive to extreme values around the cutoff. Polynomial choice can be a major issue depending on where your data is. Underlying RD is very sensitive to data around the threshold.
+    2.  **Run LM using weights**, with weights defined by the bandwidth (Kernel weighting 1-dist from z/h = weights)
+5.  Control variables
+    1.  The role of control variables are useful for precision like in an experiment. Look at the balance between treatment and control and we can look at subgroup analyses. Can decrease noise in the estimates.
+        1.  We can do this in the lm and we can do this with kernel weights in a regression
+        2.  If we find covariate imbalances, can we use matching to fix issues? Maybe, feels weird.
+        3.  For thursday- what does the paper do with covariates
+6.  How to graph with a lot of data
+    1.  binscatter, take small bins and then take the mean of a bin to see the data more clearly, how big are the bins? Need to make decisions to make sure that we have the best decision consistent with the data. (Pei and coauthors QJE RD)
+    2.  Learning RD without a cutoff? Likely not possible -- need to have a z and know that is what determining eligibility
+
+**expected for paper**
+
+1.  nonparametric
+2.  automatic bandwidth selection
+3.  plot x = h and y = ,estimated beta
+    1.  how sensitive is the estimated beta to the choice of bandwidth
+
+**extensions**
+
+1.  To what extend can we predict $z_0$ ? If we have an interval but we do not know what the cutoff is. Leverage time series literature to learn the structural break in z_0. We estimate the RD with different Zs and calculate goodness of fit measures to learn the GOF. estimate the RD
+2.  Two Zs,
+    1.  low income for scholarship, sat eligibility. Discontinuity in the two dimensional space
+3.  Manipulating Z
+    1.  Is it possible to manipulate Z (manipulating vote share to get over 50% threshold.
+        1.  Birthweight paper
+        2.  impact of extra medical attention (maybe there are some wiggle room between them (doctors manipulating)
+4.  Implicit- can only estiamte the treatment effect at the threshold -- we can identify the treatment effect maybe for a range, but we cannot extrapolate out
+    1.  What about changing the treatment threshold, suggests that maybe we should change the threshold of the attention (limitation but also very interesting)

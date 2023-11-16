@@ -1,0 +1,673 @@
+---
+title: "PUBPOL 6090 Problem Set 3"
+author: "Thelonious Goerz"
+date: "2023-10-31"
+output: 
+  pdf_document
+fontsize: 8pt
+---
+
+## Problem 1 
+
+### 1.1 
+
+```{r, echo = F, message = F, warning = F}
+rm(list = ls())
+library(tidyverse)
+library(estimatr)
+library(modelsummary)
+library(magrittr)
+library(haven)
+library(sandwich)
+library(ClusterBootstrap)
+library(fwildclusterboot)
+library(kableExtra)
+```
+
+```{r,warning = F, message = F, echo = F, results = T}
+# Simulating DID data 
+t = rep(1:10)
+# Treatment effect 
+Y_t = .5 + 0*t[6:10]
+# Add offset
+Y_pr = 0 * t[1:5] 
+Y_c = 0  *t + rnorm(10,0,.01)
+did = data.frame(Y = c(Y_pr,Y_t,Y_c),t)
+
+# Create treatment assignment
+did %<>%
+  mutate(r = row_number(),
+  treat = ifelse(r < 11 & t >=6,1,0),
+  Treatment = ifelse(r < 11,"Treatment","Control"),
+  pre= ifelse(t >=6,0,1),
+  post = ifelse(t >=6,1,0))
+
+```
+
+
+In the first figure, I plot the raw data points for over time for treatment and control. 
+
+```{r, echo = F, warning = F, message = F, fig.align='center'}
+# Create plot of DID 
+ggplot(did,aes(t,Y,color = Treatment)) + 
+ geom_line() + geom_point() + 
+  scale_x_continuous(breaks = round(seq(min(did$t), max(did$t), by = 1),0)) +
+    scale_y_continuous(breaks = seq(-2,2, by = .01))  + theme_bw() +
+  ylim(-2,2) + 
+  labs(x = "Time",
+       y = "Outcome",
+       title = "Fig. 1 : Treatment and Control Means of Simulated DID Data")
+```
+
+### 1.2.1
+
+In figure two, I plot the data over time and include a unit fixed effect (treatment status).
+
+```{r, echo = F, message = F, warning = F, fig.align='center'}
+# Create Y adjusted for unit FE
+
+# Adjust for unit FE 
+did %<>% 
+  group_by(Treatment) %>%
+  mutate(Y_tr_fe = Y - mean(Y))
+
+ggplot(did,aes(t,Y_tr_fe,color = Treatment)) + 
+  geom_line() + geom_point() + 
+  scale_x_continuous(breaks = round(seq(min(did$t), max(did$t), by = 1),1)) +
+    scale_y_continuous(breaks = seq(-2,2, by = .01))  + theme_bw() +
+  ylim(-2,2) + 
+  labs(x = "Time",
+       y = "Outcome",
+       title = "Fig. 2 :Treatment and Control Means of Simulated DID Data: Unit FE") 
+```
+### 1.2.2
+
+In figure three, I add show the trends over time with a time fixed effect. 
+
+```{r, message= F , echo = F, warning = F, fig.align='center'}
+
+# Create Y adjusted for time fixed effects 
+
+did %<>% 
+  group_by(t) %>%
+  mutate(t_fe = mean(Y),
+         Y_t_fe = Y - t_fe)
+         
+
+ggplot(did,aes(t,Y_t_fe,color = Treatment)) + 
+  geom_line() + geom_point() + 
+  scale_x_continuous(breaks = round(seq(min(did$t), max(did$t), by = 1),1)) +
+    scale_y_continuous(breaks = seq(0,2, by = .01))  + theme_bw() + geom_jitter() + 
+  ylim(-2,2) + 
+  labs(x = "Time",
+       y = "Outcome",
+       title = "Fig. 3 :Treatment and Control Means of Simulated DID Data:Time FE") 
+
+```
+
+### 1.2.3
+
+In figure four, I show the trends over time by treatment status with both time and unit fixed effects, which shows the variation that we use to identify out DID estimate. 
+
+```{r, echo = F, message = F, fig.align= 'center'}
+# Create Y adjusted for unit and time  FE
+did %<>% 
+  mutate(Y_tr_t_fe = Y_tr_fe + Y_t_fe)
+
+ggplot(did,aes(t,Y_tr_t_fe,color = Treatment)) + 
+  geom_line() + geom_point() + 
+  scale_x_continuous(breaks = round(seq(min(did$t), max(did$t), by = 1),1)) +
+    scale_y_continuous(breaks = seq(-2,2, by = .01))  + theme_bw() + 
+  ylim(-2,2) + 
+  labs(x = "Time",
+       y = "Outcome",
+       title = "Fig. 4 :Treatment and Control Means of Simulated DID Data: Unit and Time FE") 
+
+```
+
+### 1.2.4
+
+In figure five, I display the same plot as above while also adding unit-specific time trends. We can see that adding the unit-specific time trend increases the amount of variation from treatment cases that we are using for our DID estimate. Additionally, the slope parameter for the post-treatment time period is double that of our standard two-way fixed effects estimate. 
+
+```{r, echo = F, fig.align='center', message = F, warning = F}
+
+# Create Y adjusted for unit and time and unit-time trend
+did %<>% 
+  mutate(
+         Y_fe_tt = Y_tr_t_fe + Y)
+
+ggplot(did,aes(t,Y_fe_tt,color = Treatment)) + 
+  geom_line() + geom_point() + 
+  scale_x_continuous(breaks = round(seq(min(did$t), max(did$t), by = 1),1)) +
+    scale_y_continuous(breaks = seq(-4,4, by = 1))  + theme_bw() +
+  ylim(-3,3) + 
+  labs(x = "Time",
+       y = "Outcome",
+       title = "Fig. 5 :Treatment and Control Means of Simulated DID Data: Unit and Time FE and time trend") 
+
+```
+
+
+## 2.3
+
+In graph 4, we see that the treatment and control units are contributing symmetrically to the treatment effect estimate pre and post treatment. After controlling for panel fixed effects, the treatment and control units are contributing about equal variation. 
+
+## Problem 2 
+
+### a. 
+
+If we set our null hypothesis reject rate to an $\alpha = .05$ then we should expect that if we were to simulate the sampling process many times, five percent of the time we should be rejecting the null hypothesis as opposed to failing to reject it. If our estimate has have an incorrect rejection rate, then we end up discarding results that have actually statistically meaningful effects. Table 8 in Bertrand, Duflo, and Mullinathan suggests that DID estimates reject the null hypothesis anywhere from 11-50% with the CPS data. This indicates that a large number of effects that were significant assuming correct inference at the $.05$ level are actually vastly inflated compared to the true result. In the models with the AR(1) distribution, hypothesis reject rates are more sensible, with the second of the two models under-rejecting $.035$ the null hypothesis. The main takeaway is that the DID estimates may be rejecting the null hypothesis of no effect much more frequently than it should, suggesting that DID point estimates may be unreliable. 
+
+### b. 
+
+```{r, echo = F, warning = F, message = F}
+
+bdm_loaded = read_dta("../Data/bdm_loaded.dta")
+
+bdm_loaded %<>% mutate(state = factor(state))
+
+runme <- function(numstates, nummc) {
+
+  mc_results <- matrix(NA, nrow = nummc, ncol = 2)
+
+  for (i in 1:nummc) {
+
+    # Make up a data set
+    year_trigger <- as.numeric(sample(7:17, 1)) # Random year in the range 1985-1995
+    mcdata <- data.frame()
+
+    for (s in 1:numstates) {
+      index <- sample(1:50, 1) # Pick a state at random
+      temp_data <- subset(bdm_loaded, staterank == index)
+      states_2 = numstates/2
+      temp_data$law <- ifelse(states_2 >= s & temp_data$year >= year_trigger, 1, 0)
+      temp_data$new_stateid <- s
+      mcdata <- rbind(mcdata, temp_data)
+    }
+
+    # Estimate the model and save the parameter estimates
+    model <- lm(w ~ law + factor(year), data = mcdata)
+    reject <- abs(coef(model)["law"] / sqrt(diag(vcov(model))["law"])) > 1.96
+    # Estimate cluster robust se
+    # New state id
+    reject_2 <- abs(coef(model)["law"] / sqrt(diag(vcovCL(model, type = "HC1",cluster = ~ new_stateid))["law"])) > 1.96
+
+    mc_results[i, 1] <- as.numeric(reject)
+    mc_results[i,2] <- as.numeric(reject_2)
+  }
+
+  return(mc_results)
+}
+
+```
+
+```{r, echo =F, warning = F, message=F,cache=T}
+
+# Set up simultion pre-sets
+set.seed(100)
+numstates = c(50,20,10,6)
+nummc <- 1000
+
+
+
+results = data.frame(N = c(),
+                     `Rejection Rate` = c(),check.names = F)
+
+for (i in 1:length(numstates)){
+res<- runme(numstates[i], nummc)
+
+df = data.frame(`N States` = numstates[i],
+     `Rejection Rate` = c(mean(res[,1]),mean(res[,2])), SE = c(sd(res[,1]),sd(res[,2])), Cluster = c("OLS","Cluster"),check.names = F)
+results = rbind(results,df)
+
+}
+
+datasummary_df(results, title = "Replication of BDM Table 8", 
+               threeparttable = T, notes = "Asymptotic rejection rate results from 1000 monte carlo simulations of difference in difference models with varying N.",fmt =2)
+
+```
+
+In comparison to Table 8 in BDM, I replicate the simulated rejection rates net of some rounding error. Per their punch line, the cluster bootstrap adjusts for the SEs such that the rejection rate corresponds to the true rejection rate of $.05$, however performance is less strong with few clusters. 
+
+Of note, the OLS simulations with 20 and 6 clusters diverge by about 10% from their counterparts in BDM. This could be due to the much larger simulation size or it could suggest that rejection rates are actually understated in BDM. Nevertheless, clustering the SEs overcomes these issues and performs at the levels presented in Table 8 of BDM. 
+
+### c. 
+
+```{r,echo = F, warning = F, message = F}
+# Calculate t distribution with n-k
+runme_clust_correct <- function(numstates, nummc) {
+
+  mc_results <- matrix(NA, nrow = nummc, ncol = 2)
+
+  for (i in 1:nummc) {
+
+    # Make up a data set
+    year_trigger <- as.numeric(sample(7:17, 1)) # Random year in the range 1985-1995
+    mcdata <- data.frame()
+
+    for (s in 1:numstates) {
+      index <- sample(1:50, 1) # Pick a state at random
+      temp_data <- subset(bdm_loaded, staterank == index)
+      states_2 = numstates/2
+      temp_data$law <- ifelse(states_2 >= s & temp_data$year >= year_trigger, 1, 0)
+      temp_data$new_stateid <- s
+      mcdata <- rbind(mcdata, temp_data)
+    }
+
+    # Estimate the model and save the parameter estimate
+    model <- lm(w ~ law + factor(year), data = mcdata)
+    reject <- abs(coef(model)["law"] / sqrt(diag(vcov(model))["law"])) > 1.96
+    # Estimate cluster robust se
+    # New state id
+    
+    if (i == 1) {
+    reject_2 <- abs(coef(model)["law"] / sqrt(diag(vcovCL(model, type = "HC1",cluster = ~ new_stateid))["law"])) > 2.01
+
+    } else {reject_2 <- abs(coef(model)["law"] / sqrt(diag(vcovCL(model, type = "HC1",cluster = ~ new_stateid))["law"])) > 1.83}
+   
+     mc_results[i, 1] <- as.numeric(reject)
+    mc_results[i,2] <- as.numeric(reject_2)
+  }
+
+  return(mc_results)
+}
+
+
+```
+
+```{r, echo = F, cache = T}
+# Run simulation
+numstates_small = c(6,10)
+
+
+results2 = data.frame(N = c(),
+                     `Rejection Rate` = c(),check.names = F, Cluster = c())
+set.seed(100)
+for (i in 1:length(numstates_small)){
+res<- runme_clust_correct(numstates_small[i], nummc)
+
+df = data.frame(`N States` = numstates_small[i],
+     `Rejection Rate` = c(mean(res[,1]),mean(res[,2])), 
+     SE = c(sd(res[,1]),sd(res[,2])),
+     Cluster = c("OLS","Cluster"),check.names = F)
+
+results2 = rbind(results2,df)
+
+}
+
+datasummary_df(results2, title = "Replication of BDM Table 8 (Adjusted T-stat)", 
+               threeparttable = T, notes = "Asymptotic rejection rate results from 1000 monte carlo simulations of difference in difference models with varying N.",fmt =2)
+
+```
+
+In comparison to non-adjusted standard errors. The correction for the t-distribution with $N=1$ degrees of freedom makes no difference in the estimates. 
+
+
+### d.
+
+```{r, echo = F, warning=F, message=F}
+
+# Cluster bootstrap
+
+runme3 <- function(numstates, nummc, boot) {
+
+  mc_results <- matrix(NA, nrow = nummc, ncol = 2)
+
+  for (i in 1:nummc) {
+
+    # Make up a data set
+    year_trigger <- as.numeric(sample(7:17, 1)) # Random year in the range 1985-1995
+    mcdata <- data.frame()
+
+    for (s in 1:numstates) {
+      index <- sample(1:50, 1) # Pick a state at random
+      temp_data <- subset(bdm_loaded, staterank == index)
+      states_2 = numstates/2
+      temp_data$law <- ifelse(states_2 >= s & temp_data$year >= year_trigger, 1, 0)
+      temp_data$new_stateid <- s
+      mcdata <- rbind(mcdata, temp_data)
+    }
+
+    # Estimate the model and save the parameter estimates
+    model <- lm(w ~ law + factor(year), data = mcdata)
+    reject <- abs(coef(model)["law"] / sqrt(diag(vcov(model))["law"])) > 1.96
+    # Estimate cluster bootstrap se 
+    clust_boot = clusbootglm(model, data =mcdata,
+                             clusterid = new_stateid,
+                             n.cores = 11, 
+                             B = 100)
+    
+    cb_se = clust_boot$boot.sds["law"]
+
+    reject_2 <- abs(coef(model)["law"] / cb_se) > 1.96
+
+    mc_results[i, 1] <- as.numeric(reject)
+    mc_results[i,2] <- as.numeric(reject_2)
+  }
+
+  return(mc_results)
+}
+
+
+```
+
+```{r, echo = F, cache = T, eval =F}
+
+# Results for cluster bootstrapped SEs. 
+
+results3 = data.frame()
+set.seed(100)
+for (i in 1:length(numstates_small)){
+res<- runme3(numstates_small[i], 200,100)
+
+results3 = rbind(results3,data.frame(`N States` = numstates_small[i], 
+                                     `Rejection Rate` = c(mean(res[,1]),mean(res[,2])), Cluster = c("OLS","Cluster"),check.names = F))
+
+}
+
+datasummary_df(results3, title = "Replication of BDM Table 5 (Cluster Bootstrapped SEs)", 
+               threeparttable = T, notes = "Asymptotic rejection rate results from 200 monte carlo simulations of difference in difference models with varying N.",fmt =2,
+               output = "./tab3.tex")
+```
+
+\include{./tab3.tex}
+
+In comparison to Table five in BDM, the cluster bootstrapped SEs are much more accurate than they report. For both 10 and 6 clusters, there is a significant improvement on rejection rates. They report $.225$ and $.435$ for 10 and 6 respectively, where as I report $.08$ and $.06$ which are both significant improvements on accuracy. 
+
+Note: I had to reduce the number of replications for the last two examples due to computational burden.
+
+# e. 
+```{r, warning = F, message = F, echo = F}
+# implament wild cluster bootstrap 
+
+
+wildboot <- function(numstates, nummc) {
+
+  mc_results <- matrix(NA, nrow = nummc, ncol = 1)
+
+  for (i in 1:nummc) {
+
+    # Make up a data set
+    year_trigger <- as.numeric(sample(7:17, 1)) # Random year in the range 1985-1995
+    mcdata <- data.frame()
+
+    for (s in 1:numstates) {
+      index <- sample(1:50, 1) # Pick a state at random
+      temp_data <- subset(bdm_loaded, staterank == index)
+      states_2 = numstates/2
+      temp_data$law <- ifelse(states_2 >= s & temp_data$year >= year_trigger, 1, 0)
+      temp_data$new_stateid <- s
+      mcdata <- rbind(mcdata, temp_data)
+    }
+
+    # Estimate the model and save the parameter estimates
+    model <- lm(w ~ law + factor(year), data = mcdata)
+
+    # Estimate wild cluster boot
+    wild = boottest(
+  model, 
+  clustid = "new_stateid",
+  param = "law",
+  B = 200
+)
+    # New state id
+    t = wild$t_stat > 1.96
+
+    mc_results[i, 1] <- as.numeric(t)
+  }
+
+  return(mc_results)
+}
+
+```
+
+```{r, echo = F, cache = T, warning=F, message = F}
+
+# Set up simultion pre-sets
+numstates = c(50,20,10,6)
+
+results4 = data.frame(N = c(),
+                     `Rejection Rate` = c(),check.names = F)
+set.seed(100)
+for (i in 1:length(numstates)){
+res<- wildboot(numstates[i],200)
+
+results4 = rbind(results4,data.frame(`N States` = numstates[i],
+     `Rejection Rate` = c(mean(res)),
+     SE = c(sd(res[,1])),
+     check.names = F))
+
+}
+
+```
+
+
+```{r, echo = F}
+
+datasummary_df(results4, title = "Replication of CGM (Wild Cluster Bootstrap)", 
+               threeparttable = T, notes = "Asymptotic rejection rate results from 200 monte carlo simulations of difference in difference models with varying N.",fmt =2)
+
+
+```
+In comparison to CGM, I replicate the main results of their null hypothesis rejection rate in Table 5, which suggests that the wild cluster bootstrap overcomes the issues of overrejction noted in BDM. The only small divergence in my estimates is the rejection rate for 20 clusters which is actually smaller than CGM. 
+
+
+# Problem 3
+
+# a. 
+
+```{r, echo = F}
+# Load Dehejia and Wahaba data 
+
+ll = read_dta("../Data/lalonde_exper.dta")
+psid = read.table("../Data/nswpsiddata.txt", header = TRUE)
+
+## Names 
+
+psid %<>% data.frame()
+
+colnames(psid) = c("t", 
+                   "age", 
+                   "educ", 
+                   "black", 
+                   "hisp", 
+                   "marr", 
+                   "re74", 
+                   "re75", 
+                   "re78", 
+                   "u75", 
+                   "u74")
+# Data cleanng 
+psid %<>%
+  mutate(age2 = age * age,
+         hsdrop = ifelse(educ < 12,1,0))
+
+ll %<>% 
+  mutate(age2 = age * age,
+         hsdrop = ifelse(educ < 12,1,0))
+```
+
+```{r, echo = F, message = F, warning = F}
+
+# Replicate Table 1 Dehejia and Wahaba
+ll_tab  = ll %>% 
+  mutate(t = ifelse(t ==1,"Treatment","Control"),
+         Sample = "NSW") %>%
+  select(
+    Treatment = t,
+    Age = age, 
+    Education = educ, 
+    Black = black, 
+    Hispanic = hisp,
+    `No degree` = nodegree,
+     Married = married, 
+    `RE 74` = re74,
+    `RE 75` = re75,
+    Sample)
+
+psid_tab = psid %>% 
+  mutate(t = ifelse(t ==1,"Treatment","Control"),
+         Sample = "PSID") %>%
+  select(
+    Treatment = t,
+    Age = age, 
+    Education = educ, 
+    Black = black, 
+    Hispanic = hisp,
+    `No degree` = hsdrop,
+     Married = marr, 
+    `RE 74` = re74,
+    `RE 75` = re75,
+    Sample)
+
+
+datasummary(Treatment*(N + Mean)~All(ll_tab)*DropEmpty(), data = ll_tab,
+            title = "Replication of Table 1 Dehejia and Wahaba") 
+
+```
+Overall the means of the key variables are very close to those in Table 1 od Dehejia and Wahaba despite slight discrepancies in the decimal points. For the 74 earnings there is a slight difference in the treatment and control earnings which drops sharply in 75. Since both earnings for treatment and control follow a similar downward pattern pre-treatment this suggests an Ashenfelter's dip scenario. 
+
+# b. 
+
+\begin{landscape}
+
+
+```{r, echo = F, message = F, warning = F}
+# panel b unadjusted
+nsw_unadjusted_sub = lm(re78~t, data = ll)
+nsw_adjusted_sub = lm(re78~t + age +age2 + educ + hsdrop + hisp + black, data = ll)
+q_nsw_unadjusted_sub = lm(re78~t + re75, data = ll)
+q_nsw_adjusted_sub = lm(re78~t + re75 + age +age2 + educ + hsdrop + hisp + black, data =ll)
+nsw_all_sub = lm(re78~t + re75  + age + hsdrop + educ + I(educ^2) + hisp + black + married, data =ll)
+
+# Panel C 
+nsw_unadjusted = lm(re78~t , data = ll)
+nsw_adjusted = lm(re78~t + age + re74 +age2 + educ + hsdrop + hisp + black, data = ll)
+q_nsw_unadjusted = lm(re78~t + re75, data = ll)
+q_nsw_adjusted = lm(re78~t + re75+ re74 + age +age2 + educ + hsdrop + hisp + black, data = ll)
+
+nsw_all = lm(re78~t + re75 + re74 + age + hsdrop + educ + I(educ^2) + hisp + black + married, data = ll)
+
+
+dw_table_2 = data.frame(
+  Type = c("Treatment - Control","Treatment - Control",
+           "Quasi DID","Quasi DID","All Covariates",
+           "Treatment - Control","Treatment - Control",
+           "Quasi DID","Quasi DID","All Covariates"),
+  
+  Panel = c("B","B" ,"B","B","B","C","C","C","C","C"),
+  Model = c("Unadjusted","Adjusted","Unadjusted","Adjusted",".",
+            "Unadjusted","Adjusted","Unadjusted","Adjusted","."),
+  
+`Point Estimate` = c(nsw_unadjusted_sub$coefficients[2],
+nsw_adjusted_sub$coefficients[2],
+q_nsw_unadjusted_sub$coefficients[2],
+q_nsw_adjusted_sub$coefficients[2],
+nsw_all_sub$coefficients[2],
+
+nsw_unadjusted$coefficients[2],
+nsw_adjusted$coefficients[2],
+q_nsw_unadjusted$coefficients[2],
+q_nsw_adjusted$coefficients[2],
+nsw_all$coefficients[2]), check.names = F)
+
+
+val = function(x){x}
+datasummary(All(dw_table_2)~val*Panel*Type*Model*DropEmpty(),data = dw_table_2,
+            notes = c("1. The all covariates model, Panel B and C, includes all covariates in addition to an education squared term and the re74."),threeparttable = T,
+               title = "Replication of Table 2 Row 1 Panel B and C (Dehejia and Wahaba)",
+            align = "lcccccccccc") 
+
+```
+
+\end{landscape}
+
+Overall, I am able to replicate the coefficients, however I was not able to replicate unadjusted coefficient for Quasi-DID for Panel C, despite using the core variables. 
+
+Per the problem set, I was unable to replicate column 5 exactly, however I am able to get a very close point estimate by controlling for education squared which is described in the table note. Overall, my point estimates match closely with table 2. 
+
+# c. 
+
+In the following table, I present descriptive statistics for the PSID sample
+
+```{r, echo = F}
+datasummary(Treatment*(N + Mean)~All(psid_tab)*DropEmpty(), data = psid_tab,
+            title = "Replication of Table 1 Dehejia and Wahaba (PSID)") 
+```
+
+The replicated means of the variables in the PSID control group match closely to the results that Dehejia and Wahaba report, net of some rounding error. 
+
+### d. 
+
+\begin{landscape}
+
+```{r, echo = F, warning = F, message = F}
+# Replicate PSID results
+
+psid_unadjusted_sub = lm(re78~t, data = psid)
+
+psid_adjusted_sub = lm(re78~t + age +age2 + educ + hsdrop + hisp + black, data = psid)
+
+q_psid_unadjusted_sub = lm(re78~t + re75, data = psid)
+
+q_psid_adjusted_sub = lm(re78~t + re75 + age + age2 + educ + hsdrop + hisp + black, data =psid)
+
+psid_all_sub = lm(re78~t + re75 + age + age2 + hsdrop + educ + I(educ^2) + hisp + black + marr + u74 + u75, data =psid)
+
+# Panel C 
+psid_unadjusted = lm(re78~t, data = psid)
+
+psid_adjusted = lm(re78~t + re74 + age +age2 + educ + hsdrop + hisp + black, data = psid)
+
+q_psid_unadjusted = lm(re78~t + re75, data = psid)
+
+q_psid_adjusted = lm(re78~t + re75 +re74+ age +age2 + educ + hsdrop + hisp + black, data = psid)
+
+psid_all = lm(re78~t + re75  + re74 + age + age2 + hsdrop + educ + I(educ^2)  + hisp + black + marr, data = psid)
+
+
+dw_table_2_psid = data.frame(
+  Type = c("Treatment - Control","Treatment - Control",
+           "Quasi DID","Quasi DID","All Covariates",
+           "Treatment - Control","Treatment - Control",
+           "Quasi DID","Quasi DID","All Covariates"),
+  
+  Panel = c("B","B" ,"B","B","B","C","C","C","C","C"),
+  Model = c("Unadjusted","Adjusted","Unadjusted","Adjusted",".",
+            "Unadjusted","Adjusted","Unadjusted","Adjusted","."),
+  
+`Point Estimate` = c(psid_unadjusted_sub$coefficients[2],
+psid_adjusted_sub$coefficients[2],
+q_psid_unadjusted_sub$coefficients[2],
+q_psid_adjusted_sub$coefficients[2],
+psid_all_sub$coefficients[2],
+
+psid_unadjusted$coefficients[2],
+psid_adjusted$coefficients[2],
+q_psid_unadjusted$coefficients[2],
+q_psid_adjusted$coefficients[2],
+psid_all$coefficients[2]), check.names = F)
+
+
+
+val = function(x){x}
+datasummary(All(dw_table_2_psid)~val*Panel*Type*Model*DropEmpty(),data = dw_table_2_psid,
+            notes = c("1. The all covariates model, Panel B and C, includes all covariates in addition to an education squared term and the re74."),threeparttable = T,
+               title = "PSID-1 Replication of Table 2 Row 1 Panel B and C",
+            align = "lcccccccccc") 
+
+```
+
+\end{landscape}
+
+For regression results, the results are very close to those reported in Dehejia and Wahaba, however I am not able to replicate them exactly, despite using their specifications. I tried alternate specifications, but was ultimately unable to recover exact point estimates. Nevertheless, I replicate estimates with the same sign and poitn estimate as the paper net of some error. 
+
+
+### e. 
+
+In the PSID-1 and NSW samples, the NSW sample suggests that the growth in income for treatment is positive and significant while the PSID-1 sample suggests the complete opposite, flipping the point estimate negative. It think that this control sample points to the sensitivity of the estimates to sample size and potential selection that resulted from that specific treatment sample. The PSID sample is significantly larger than the entire sample for the NSW experiment. Furthermore, while the treatment and control groups were randomly assigned in the experiment, the PSID were not. It is possible that the discrepancy in the treatment effects could be due to the observational nature of the data which underscores Lalonde's original point. 
+
+
+
+
+

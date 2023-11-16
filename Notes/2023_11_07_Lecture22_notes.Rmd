@@ -1,0 +1,57 @@
+---
+title: "PUBPOL 6090 Lecture 22 Notes"
+author: "Thelonious Goerz"
+date: "2023-11-07"
+output: pdf_document
+---
+
+**Instrumental Variables, LATE, and Weak IV**
+
+How do we interpret the coefficient in LATE?
+
+1.  LATE binary interpretation
+    1.  Angrist imbens rubin, Y X Z
+    2.  Interpretation is the treatment effect for the compliers (L in late refers ot the fact that we are focusing on a subgroup).
+2.  Continuous X binary instrument
+    1.  AGI Y X (cont) Z
+        1.  Weighted average of the treatment effects for the people where Z changes (switchers) which are weighted (not a simple weighting)
+        2.  We add a derivative for the continuous treatment effect for compliers with added $\omega$ weights
+        3.  average over the parts of the demand cure that we observe based on the shifts of the instrument
+
+Marginal treatment effects literature builds off of the LATE applications and theorems.
+
+How do we get information on treatment-indifferent members of the population
+
+-   We need to add more econometric structure (How willing are we to want to extrapolate on the structure and nature of treatment effects for MTE)
+
+------------------------------------------------------------------------
+
+**Weak IV**
+
+Problems of weak IV
+
+-   Mild exclusion restrictions become problematic
+
+-   finite sample bias with OLS
+
+-   statistical inference issues
+
+-   loss of power
+
+Solution
+
+-   Anderson and Rubin Confidence intervals
+
+    -   Transofrm Y variable, test the hypothesis that the gamma z is greater than 0
+
+-   We get a confidence reange of possible betas but not a point estimate
+
+-   This works because the X hat we get is overfit to the errors, it is going to be effected by the errors in the first stage. in the second stage the overfitting is correlated with epsilon
+
+    -   Single stage estimator
+
+-   These are the range of values that we think the beta is in
+
+-   Quarter of birth weak IV
+
+-   

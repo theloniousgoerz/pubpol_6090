@@ -21,6 +21,8 @@ library(estimatr)
 library(boot)
 library(sandwich)
 library(KernSmooth)
+options(scipen = 999)
+library(glmnet)
 
 ```
 
@@ -210,7 +212,9 @@ msummary(list("Classic SE" = sim_mod,
 
 
 ```
-In table 5, I compare regression estimates of $Y$ on $X$ with three different standard errors. The naive variance estimate is much smaller than the robust and bootstrapped SEs. The robust SE is slightly larger which is to be expected and the bootstrapped SE is slightly smaller than the robust SE. Based on these reults, we can conclude that the bootstrapped SE recovers the robust Huber-White estimate of the variance rather than the $i.i.d.$ estimate. 
+In table 5, I compare regression estimates of $Y$ on $X$ with three different standard errors. The naive variance estimate is much smaller than the robust and bootstrapped SEs. The robust SE is slightly larger which is to be expected and the bootstrapped SE is slightly smaller than the robust SE. Based on these results, we can conclude that the bootstrapped SE recovers the robust Huber-White estimate of the variance rather than the $i.i.d.$ estimate. 
+
+## b)
 
 ```{r, echo =F}
 # Create monte carlo simulation 
@@ -431,8 +435,8 @@ ggplot(df,aes(x = x_range ,y = diff_01)) +
   labs(x = "00 Baseline Test Score",
        y = "Treatment-Control Difference of 01 Test Score",
        title = "Figure 3: Year 1 (2001) Test Score Impacts by Baseline (2000) Test Score \n Difference Between Program and Comparison Schools, Cohort 1", 
-       subtitle = "Nonparametric Fan Locally Weighted Regression. \n Dashed lines represent bootstrapped 95% confidence intervals of the treatment control difference.",
-       caption = "Dashed line represents 0 standardized test score. \n Horizontal line represents minimum winning score in 2001. \n Local linear regressions use Epanechnikov kernel with .4 bandwidth. Bootsrapped CIs based on 50 replications.") + 
+       subtitle = "Nonparametric Fan Locally Weighted Regression.",
+       caption = "Dashed line represents 0 standardized test score. \n Horizontal line represents minimum winning score in 2001. \n Local linear regressions use Epanechnikov kernel with .4 bandwidth. Bootsrapped CIs based on 50 replications. \n Dashed lines represent bootstrapped 95% confidence intervals of the treatment control difference.") + 
 # Add confidence intervals
   geom_line(data = df, aes(x_range,low),size = .6, color = "black",linetype = "dashed") + 
   geom_line(data = df, aes(x_range,high),size = .6, color = "black",linetype = "dashed")
@@ -447,8 +451,150 @@ Based on Figure 3, results indicate that the majority of the test score gains as
 
 ## Problem 4
 
+```{r, echo = F}
+pop_train = read_dta("../Data/population_train.dta")
+pop_test = read_dta("../Data/population_test.dta")
+```
+
+## 4.a 
+
+In Table 7, I present RMSE and MAPE goodness of fit statistics for in and out of sample data for a variety of models. 
+
+```{r, echo = F, warning = F, cache = T, cache.lazy = F}
+
+# Predict based on global sample average 
+library(Metrics)
+
+# Estimate Naive model 
+# Birth, death, migration as predictors 
+# Outcome is global sample average child counts 
+naive_model = lm(truth~births + deaths + annual_migrants, pop_train)
+# RMSE 
+is_rmse_naive = rmse(pop_train$truth, fitted(naive_model))
+# OOS RMSE 
+naive_predict_test = predict(naive_model, newdata = pop_test[,c("births","deaths","annual_migrants")])
+oos_rmse_naive = rmse(pop_test$truth,naive_predict_test)
+# MAPE 
+is_naive_mape = mean(abs(pop_train$truth -fitted(naive_model)))
+oos_naive_mape = mean(abs(pop_test$truth - naive_predict_test))
+
+# Global Sample Average Model 
+gsa = lm(truth~1,data = pop_train)
+gsa_predict = predict(gsa, newdata = pop_test[,"truth"])
+# RMSE 
+is_rmse_gsa = rmse(pop_train$truth, fitted(gsa))
+oos_rmse_gsa = rmse(pop_test$truth,gsa_predict)
+# MAPE 
+is_mape_gsa = mean(abs(pop_train$truth-fitted(gsa)))
+oos_mape_gsa = mean(abs(pop_test$truth - gsa_predict))
+# ---------------------------------------------------
+mape = function(x,y){
+  mean(abs(x - y))
+}
+
+# Kitchen sink model 
+ks_m = lm(truth~.,data = pop_train)
+ks_m_predict = predict(ks_m,newdata = pop_test)
+# RMSE
+is_rmse_ks_m = rmse(pop_train$truth,fitted(ks_m))
+oos_rmse_ks_m = rmse(pop_test$truth,ks_m_predict)
+# MAPE
+is_mape_ks_m = mape(pop_train$truth,fitted(ks_m))
+oos_mape_ks_m = mape(pop_test$truth,ks_m_predict)
+# ---------------------------------------------------
+# Lasso Regression 
+# Define matrix of predictors 
+lasso_pred = pop_train %>% 
+  select(-truth) %>% 
+  data.matrix()
+# Cross validate minimum lambda
+lasso_cv = cv.glmnet(y = pop_train$truth,x =lasso_pred,alpha = 1)
+# Estimate model with minimum lambda 
+lasso_model = glmnet(y = pop_train$truth, x = lasso_pred, alpha = 1, lambda = lasso_cv$lambda.min)
+# Estimate LM on lasso selected betas
+lasso_lm = lm(truth~li + deaths + af + ab + ma_af + ma_ab, data = pop_train)
+lasso_lm_pred = predict(lasso_lm, newdata = pop_test[,c("truth","li","deaths","af","ab","ma_af","ma_ab")])
+# RMSE 
+is_rmse_lasso = rmse(pop_train$truth, fitted(lasso_lm))
+oos_rmse_lasso = rmse(pop_test$truth,lasso_lm_pred)
+# MAPE
+is_mape_lasso = mape(pop_train$truth,fitted(lasso_lm))
+oos_mape_lasso = mape(pop_test$truth, lasso_lm_pred)
+# ---------------------------------------------------
+# Post-lasso model with county-age-year 
+post_lasso = lm(truth~ superfips + year + age + li + deaths + af + ab + ma_af + ma_ab, data = pop_train)
+post_lasso_pred = predict(post_lasso, newdata = pop_test[,c("truth","li","deaths","af","ab","ma_af","ma_ab","superfips",
+                                                            "age","year")])
+# RMSE 
+is_rmse_post_lasso = rmse(pop_train$truth,fitted(post_lasso))
+oos_rmse_post_lasso = rmse(pop_test$truth,post_lasso_pred)
+# MAPE 
+is_mape_post_lasso = mape(pop_train$truth, fitted(post_lasso))
+oos_mape_post_lasso = mape(pop_test$truth, post_lasso_pred)
+# ---------------------------------------------------
+# Analyst specified linear model 
+theory_lm = lm(truth~year+ age + I(age^2) + births + deaths + frac_0020 + frac_nw +
+                 # FE for state 
+               factor(superfips)
+                 , data = pop_train)
+
+theory_lm_pred = predict(theory_lm,newdata = pop_train[,c("truth","year","age","superfips","births","deaths","frac_0020","frac_nw")])
+# RMSE 
+is_rmse_theory_lm = rmse(pop_train$truth,fitted(theory_lm))
+oos_rmse_theory_lm = rmse(pop_test$truth, theory_lm_pred)
+# MAPE 
+is_mape_theory_lm = mape(pop_train$truth,fitted(theory_lm))
+oos_mape_theory_lm = mape(pop_test$truth, theory_lm_pred)
+# ---------------------------------------------------
+
+# Analyst specified linear model - FEs
+theory_lm2 = lm(truth~year+ age + I(age^2) + births + deaths + frac_0020 + frac_nw + superfips
+                 , data = pop_train)
+
+theory_lm_pred2 = predict(theory_lm2,newdata = pop_train[,c("truth","year","age","superfips","births","deaths","frac_0020","frac_nw")])
+# RMSE 
+is_rmse_theory_lm2 = rmse(pop_train$truth,fitted(theory_lm2))
+oos_rmse_theory_lm2= rmse(pop_test$truth, theory_lm_pred2)
+# MAPE 
+is_mape_theory_lm2 = mape(pop_train$truth,fitted(theory_lm2))
+oos_mape_theory_lm2 = mape(pop_test$truth, theory_lm_pred2)
+# ---------------------------------------------------
+
+```
 
 
 
+```{r, echo = F, results = T}
 
+
+# Model Table 
+
+data.frame(Model = c("Naive Model (OLS)"," Global Sample Average (Intercept)","Kitchen Sink Regression","LASSO Regression (w/ Min Lambda)"," Post-Lasso (w/ Focal Predictors)","OLS with State FEs and Nonlinear Age","OLS with Nonlinear Age"),
+           "IS RMSE" = c(is_rmse_naive,is_rmse_gsa, is_rmse_ks_m,is_rmse_lasso,is_rmse_post_lasso,is_rmse_theory_lm,is_rmse_theory_lm2),
+           
+           "OOS RMSE" = c(oos_rmse_naive,oos_rmse_gsa,oos_rmse_ks_m,oos_rmse_lasso,oos_rmse_post_lasso,oos_rmse_theory_lm,oos_rmse_theory_lm2),
+           
+           "IS MAPE" = c(is_naive_mape,is_mape_gsa,is_mape_ks_m,is_mape_lasso,is_mape_post_lasso,is_mape_theory_lm,is_mape_theory_lm2),
+           
+           "OOS MAPE" = c(oos_naive_mape,oos_mape_gsa,oos_mape_ks_m,oos_mape_lasso,oos_mape_post_lasso,oos_mape_theory_lm,oos_mape_theory_lm2),
+           
+           check.names = F) %>% 
+  datasummary_df(., notes = c("Naive Model includes births, deaths, and migration as features. Global Sample Average Model includes only an intercept. LASSO regression model estimated with optimal training data lambda determined through cross validation. IS = In Sample, OOS = Out of Sample."), threeparttable = T, title = "Comparison of Different Prediction Models for Estimating Child Population Counts",
+                 align = "lcccc")
+
+
+
+```
+
+## 4.b 
+
+Based on these sets of models, I would choose the Lasso and Post-Lasso models because of their out of sample RMSE and MAPE. The LASSO model uses only selected coefficients and the post-LASSO model uses selected coefficients in addition to age-county-year variables. Both perform well out of sample and particularly the post-LASSO model performs well with the addition of theoretically relevant variables. 
+
+## 4.c 
+
+In and out of sample RMSE and MAPE do vary by model. The Naive model, which incorporates births,deaths, and migration, is parsimonious and performs reasonably well on MAPE out of sample but do not perform well in RMSE. Across models, OOS fit is usually worse than in-sample fit, with the exception of the kitchen sink and LASSO models. The models with the lowest OOS RMSE and MAPE were more parsimonious which can reduce overfitting or adding in-sample specific noise. Additionally, the LASSO models fit with cross-validation to select lambdas may perform better because of a more principled feature selection. In models that are more complex and add in all information possible, performance may be worse. 
+
+## 4.d
+
+I think that the strength of using LASSO and other data-driven variable selection methods makes sense for modeling in settings where data are high dimensional. Additionally, when forecasting or prediction is the desired outcome, LASSO performs particularly well at maximizing OOS goodness of fit. If the goal of analysis is prediction, I think that OLS and other traditional methods provide more substantively and theoretically relevant estimates. Additionally, when conducting statistical inference, it is possible that machine learning methods may select data that predict well but are not substantively informative. Thus, the variables chosen may be nonsensical relative to the actual problem of study. That said, I believe that ML methods do add greatly to modeling and provide powerful tools to perform robustness checks and analyze model performance. 
 

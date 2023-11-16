@@ -1,0 +1,47 @@
+---
+title: "PUBPOL 6090 Lecture 22 Prep"
+author: "Thelonious Goerz"
+date: "2023-11-06"
+output: pdf_document
+---
+
+**Local Average Treatment Effect**
+
+In the LATE context we have different outcomes for different combinations of Z and D together.
+
+We assume SUTVA - that treatment assignment does not depend on other people (no spillovers). Though this is not core for LATE. Different potential outcomes for treatment status as a function of the instrument.
+
+IV Assumptions (4)
+
+1.  Independence (Stuff is parallel to instrumental assignment) Independent of Z
+2.  Exclusion restriction $Y(d,0^{z=0}) = Y(x,z=1) \forall d=0,d=1$
+    1.  basically the instrument does not influence the realization of the outcome beyond the treatment (Z has no direct causal effect on Y)
+    2.  Assumptions 1 and 2 make up the exclusion restriction assumption in the linear model.
+3.  Monotonicity, $D_{1i} - D_{0i} >= 0 \forall_i$ basically, treatment pushes people all in the same direction Treatment induces in the same direction - compulsory schooling laws do not induce people to drop out (The instrument has a weakly same signed treatment
+4.  effect). $E[D{1i} - D_{0i}) \neq 0$ first stage
+5.  No defiers
+6.  Bonus: Embeds the additional assumption that **everyone has the same treatment effect in the compliers -- if we assume that the treatment effect is the same for all subgroups this is fine but it is likely not.**
+
+These make up the LATE theorem. The following equation has the causal interpretation as follows
+
+$$
+\hat\beta_{IV} = \frac{E(Y|Z=1) - E(Y|Z=0)}{E(D|Z=1) - E(D|Z=0)}
+$$
+
+$E[Y_{1i}- Y_{0i} |D_{1i} > D_{0i}] = ATE / \ i \forall D_1 =1,D_0 = 0$
+
+This is the ATE for all the subset of the population that is induced to treatment only through the treatment. E.g., if their instrument is off then they are not treated, if their instrument is on then they are treated. These individuals are called "compliers' - treatment assignment complies with the intention of the instrument.
+
+1.  Always takers, never takers, compliers, defiers
+
+An additional 5th assumption of LATE is that there are **no defiers *which allows our IV estimate to identify the treatment effect only for the compliers***
+
+How do these assumptions work in the linear model? Having a constant parameter on the instrument embeds *monotonicity into the writing of the linear equation.* this embeds the assumption that everyone has the same treatment effect.
+
+This motivates our thinking about heterogeneous treatment effects (LATE cannot give us this).
+
+------------------------------------------------------------------------
+
+Extension of the late
+
+**AGI** allow for continuous X. We want to learn about the slope of the demand curve by shifting the binary instrument of the around. Fish paper Bad weather as a shifter for the supply curve to learn about the slope of the demand curve

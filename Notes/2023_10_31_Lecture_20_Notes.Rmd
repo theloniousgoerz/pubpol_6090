@@ -1,0 +1,55 @@
+---
+title: "PUBPOL 6090 Lecture 20 Notes"
+author: "Thelonious Goerz"
+date: "2023-10-31"
+output: pdf_document
+---
+
+**Instrumental Variables**
+
+*Looking ahead*
+
+-   Paper required for Thursday
+
+-   IV is spooky
+
+------------------------------------------------------------------------
+
+**Core components of IV**
+
+1.  $X_i$ is our key variable of interest which is the endogenous regressor
+    1.  We are concerned that $X_i$ is correlated with $\epsilon_i$ which is caused by a third variable $\omega_i$ which is acting on both of them.
+2.  IV is premised on the idea that we have $Z_i$ which is our instrument for $X_i$ but *is not* correlated with $Y_i$
+    1.  In general when we estimate IV we loose efficiency in the case where we **need the instrument** and when we **do not need the instrument** (e.,g, OLS is fine). Inverse of the variance of $\sigma^2 (\hat X' \hat X)^{-1} > \sigma^2 ( X' X)^{-1}$
+
+**Assumptions**
+
+1.  First stage oer assumption, Z predicts Z
+2.  We have to satisfy the exclusion restriction (e.g., we can exclude form structural regression and assume that Z and $\epsilon$ are uncorrelated. This is the Sauron's ring assumption of IV. (Make or break). $E(\epsilon| Z) = 0$
+    1.  Do we think that everything in the error term is uncorrelated with the instrument? Can we think of ways in which it breaks down? First think about the directionality. What is correlated up or down.
+
+**Application**
+
+Gifts and inheritances are instruments for wealth
+
+-   Miller (Journal of Health Econ (Jonathan Meer et al 2003
+
+    -   Sold as a null effects paper. iF we can make the case that we can sell the paper as a advancing the field forward then we can make it work
+
+**Discussing the exclusion restriction**
+
+-   Mild violations of the first stage
+
+    -   What if Z is a little correlated with Epsilon, then this may not be an issue. If we have a weak IV then this becomes a problem
+
+**Overidentification tests**
+
+-   It can only tell you whether the instruments are congruent and incongruent
+
+    -   but it cannot tell you whether the instruments are good or valid, if they diverge, you can say that they diverge and there is something problematic. **But we cannot treat the test as telling us anything about the validity of our instruments**
+
+-   Two-step test in Angrist and Kruger
+
+    -   Instruments must not be correlated with residuals, if the model is exactly identified, then the Zs will not be correlated with the residuals
+
+-   Overidentification tests could fail in a nonlinear setting (LATE) because different instruments are getting at different treatment effects (high v low treatment effects)

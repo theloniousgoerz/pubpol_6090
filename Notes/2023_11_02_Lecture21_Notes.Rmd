@@ -1,0 +1,62 @@
+---
+title: "PUBPOL 6090 Lecture 21"
+author: "Thelonious Goerz"
+date: "2023-11-02"
+output: pdf_document
+---
+
+**Agenda**
+
+-   Angrist and Krueger discussion
+
+-   More IV
+
+**AK -return to schooling**
+
+-   Compulsory schooling, age--based enrollment makes it so that certain people will have a lower cost of dripping out. iF you are born in the firs quarter, it is lower cost to drop out
+
+-   TABLE III
+
+    -   Key takeaway is that rough instrument can in induce variation in education (1/10) year difference
+
+    -   Bron in Q1 - older, reach drop out age with less schooling and thus dropping out is low cost
+
+    -   Born later, younger, accumulate more schooling by drop out age and thus dropping out is hgher cost
+
+What makes IV coefficient go up rather than down?
+
+-   IV might induce variation in subgroup that has a *different treatment effect*
+
+    -   Weighting of the averages of the underlying treatment effect could be driving this Different LATEs)
+
+-   Instrument might be biased
+
+-   IV could be invalid because parent occupations may influence timing of birth (1st quarter births may be born to loweer SES families) Violation of the independence assumption
+
+-   Prior about OLS is wrong? OLS could be biasing the coefficient downward
+
+-   Sampling uncertainty and noise in the sample which may be affecting the difference (coefficients for OLS and WALD estimate are not that different).
+
+Table 4
+
+-   Remove the trend to show over time differences,
+
+    -   we could use local polynomial to smooth over the trend
+
+    -   Build credibility of the instrument for argument
+
+-   Table four removes the inuition but does add a quantification of the power of the association
+
+Table V
+
+-   Punchline table
+
+    -   OLS and IV for four different tyoes
+
+Over ID test
+
+-   There are more instruments for one endogenous regressor
+
+    -   First stage r squared tec.
+
+-   We do not wnt to put too much weight on Over ID test because we have to start with the assumption that instruments are valid

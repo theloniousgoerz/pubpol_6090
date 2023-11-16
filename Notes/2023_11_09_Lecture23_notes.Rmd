@@ -1,0 +1,24 @@
+---
+title: "PUBPOl 6090 Lecture 23"
+author: "Thelonious Goerz"
+date: "2023-11-09"
+output: pdf_document
+---
+
+**Inference for IV**
+
+t-ration inference for IV. First-stage F and second stage T inference.
+
+Relevant for possibly weak inference, anderson-rubin confidence intervals can be improved on from this paper. (Lee et al. 2022).
+
+-   Tradeoffs between t and f
+
+-   empirical practice
+
+-   better CIs.
+
+If first stage F is strong, we can use a 1.96 critical value for the 0.05 level, if the first stage is weaker then we eed to increase the critical value (e.g., 2.73).
+
+**Simulated IV**
+
+Collapse high-dimensional complicated policy schemes which can be made into a one dimensional instrument. Need to hold distribution of Xs fxed. 3333

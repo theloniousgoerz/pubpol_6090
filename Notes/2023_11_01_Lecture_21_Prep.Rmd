@@ -1,0 +1,92 @@
+---
+title: "PUBPOL 6090 lecture 21 Prep"
+author: "Thelonious Goerz"
+date: "2023-11-01"
+output: pdf_document
+---
+
+**GMM notes**
+
+-   GMM is a generic method for estimating parameters in a model
+
+    -   Uses moment conditions which are instruments (functions of the modal parameters and data) such that their expectation is 0 at the parameters true values.
+
+-   GMM controls for OVB and unobserved panel heterogeneity
+
+-   Case
+
+    -   linear model with an endogenous regressor
+
+    -   We assume that a matrix Z is a set of variables high correlations with X
+
+    -   GMM uses IV
+
+    -   Instruments must be exogenous to epsilon in the structural equation
+
+-   Difference gmm
+
+    -   used in dynamic panel settings, endogenous regressors, heteroskedsticity, autocorrelation
+
+    -   Sort of like first difference, transforms all regressors with differencing, removes FEs
+
+    -   Values are differenced and past values are used as instruments for current values
+
+-   Instruments
+
+    -   internal instruments = gmmstyle
+
+    -   external instruments ivystyle
+
+-   System gmm
+
+    -   Corrects endogeneity using many instruments for more efficiency, transforms the instruments to remove endogeneity with FEs
+
+    -   Two equation models
+
+    -   Orthogonal deviations
+
+-   Check OVERID test
+
+------------------------------------------------------------------------
+
+**Checklist and building blocks of IV**
+
+1.  Motivate the question of why X affects y and why we care. What magnitures are interesting.
+2.  Motivate the correlations (ols relationshio, table of means, graph of distributions
+3.  Propose the instrument. Make the case for its need (why is OLS wrong)
+    1.  Legitimacy
+        1.  First stage power
+        2.  exclusion restrictions
+    2.  Show legitimacy with first stage table
+        1.  F test (joint for many instruments)
+    3.  Reduced form relationship (instrument plus control variables) - unadjusted
+4.  Estimate the IV
+    1.  Interpret what the punchline is. What is the significance of the point estimate and the confidence interval
+5.  Robustness checks
+    1.  do the experiment that wasn't (falsification test)
+        1.  something parallel or that did not happen
+        2.  Hausmann test
+    2.  Impacts on subgroups
+6.  Tell the reader how should this change how we think about the literature or the phenomenon.
+
+------------------------------------------------------------------------
+
+**Applications of IV**
+
+-   Vietnam veteran status (instrument is draft lottery)
+
+-   Fertility on wages and LFP
+
+    -   having twins rather than one child
+
+    -   sibling sex composition
+
+-   Generalize to other outcomes
+
+------------------------------------------------------------------------
+
+**Local Average Treatment Effect**
+
+When we have a Z, it will not affect the treatment take up the same for everyone. E.g., always takers, never takers, compliers, defiers.
+
+-   Who is being induced to treatment, and what is their effect? The treatment is "local" because it is specific to the people that are induced to change their treatment status by the treatment.
