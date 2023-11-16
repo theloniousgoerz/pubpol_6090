@@ -1,4 +1,4 @@
-# Frisch Waugh Lovell by hand 
+dd# Frisch Waugh Lovell by hand 
 # Thelonious Goerz 
 # 9/4/23
 
@@ -22,6 +22,6 @@ coef(lm(y1 ~ x1 + x2))
 
 
 # fwl ols
-# Remove intercet
+# Remove intercept
 plot(fitted(lm(r1 ~ -1 + r2)))
 
